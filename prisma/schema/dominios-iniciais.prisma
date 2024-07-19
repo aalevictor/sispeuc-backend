@@ -68,23 +68,23 @@ model Prospeccao {
 }
 
 model Imovel {
-    id                                  Int                         @id @default(autoincrement())
-    matriculaId                         Int                         @unique
-    vistoriaId                          Int                         @unique
-    processoId                          Int                         @unique
+    id                                  Int                                    @id @default(autoincrement())
+    matriculaId                         Int                                    @unique
+    vistoriaId                          Int                                    @unique
+    processoId                          Int                                    @unique
     sqlSetor                            Int?
     sqlQuadra                           Int?
     sqlLote                             Int?
     sqlDigito                           Int?
     sqlPai                              Int?
     sqlFilho                            Int?
-    registroNotasReferencia             String?                     @db.VarChar(128)
-    enderecoLogradouro                  String?                     @db.VarChar(256)
-    enderecoNumero                      String?                     @db.VarChar(7)
-    enderecoComplemento                 String?                     @db.VarChar(64)
-    enderecoReferencia                  String?                     @db.VarChar(256)
+    registroNotasReferencia             String?                                @db.VarChar(128)
+    enderecoLogradouro                  String?                                @db.VarChar(256)
+    enderecoNumero                      String?                                @db.VarChar(7)
+    enderecoComplemento                 String?                                @db.VarChar(64)
+    enderecoReferencia                  String?                                @db.VarChar(256)
     enderecoDistrito                    EnderecoDistrito?
-    enderecoCep                         String?                     @db.VarChar(7)
+    enderecoCep                         String?                                @db.VarChar(7)
     enderecoSubprefeitura               EnderecoSubprefeitura?
     enderecoSubprefeituraSigla          EnderecoSubprefeituraSigla?
     enderecoMacroarea                   EnderecoMacroarea?
@@ -95,15 +95,16 @@ model Imovel {
     areaLoteTotalRegistrada             Decimal?
     areaCoeficienteAproveitamento       Decimal?
     areaCoeficienteAproveitamentoMinimo Decimal?
-    geoEpsg                             Int?
+    geoLatLong                          Unsupported("geography(Point, 4326)")?
+    geoEpsg                             Int?                                   @default(4326)
     decretoNumero                       String?
     decretoTipo                         String?
     tombamentoCompresp                  String?
     tombamentoCondephat                 String?
     tombamentoIphan                     String?
-    criadoEm                            DateTime                    @default(now())
-    atualizadoEm                        DateTime                    @default(now()) @updatedAt
-    deletado                            Boolean                     @default(false)
+    criadoEm                            DateTime                               @default(now())
+    atualizadoEm                        DateTime                               @default(now()) @updatedAt
+    deletado                            Boolean                                @default(false)
 
     ImovelProcesso  Processo    @relation(fields: [processoId], references: [id])
     ImovelVistoria  Vistoria?   @relation(fields: [vistoriaId], references: [id])
