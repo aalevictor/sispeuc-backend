@@ -20,7 +20,6 @@ Base de desenvolvimento backend de SMUL/ATIC:
 npm install
 ```
 
-
 ## Criando o arquivo .env
 
 ```bash
@@ -43,11 +42,16 @@ Copie o código gerado para o campo RT_SECRET no arquivo .env
 
 No arquivo 'prisma/seed.ts' substitua as informações por suas informações de usuário. E então execute:
 
-```bash
-npx prisma migrate dev
-```
+Usar a flag 'schema', sem extensão '.prisma', pois o caminho é um diretório (onde todos os arquivos \*.prisma são lidos)
 
 ```bash
+npx prisma migrate dev --schema=prisma/schema
+```
+
+Usar a flag 'schema', sem extensão '.prisma', pois o caminho é um diretório (onde todos os arquivos \*.prisma são lidos)
+
+```bash
+npx prisma generate --schema=prisma/schema
 npx prisma generate --schema=prisma2/schema.prisma
 ```
 
@@ -63,10 +67,12 @@ Por padrão, a aplicação rodará na porta 3000.
 # atualiza a cada mudança nos arquivos
 npm run dev
 ```
+
 ```bash
 # modo de desenvolvimento
 npm run start
 ```
+
 ```bash
 # modo de produção
 npm run prod
