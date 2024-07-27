@@ -31,21 +31,21 @@ model Endereco {
 }
 
 //Domínio de Notificação
-model Matricula {
-    id                   Int      @id @default(autoincrement())
-    imovelId             Int      @unique
-    matriculaNr          String?
-    matriculaDescricao   String?  @db.Text
-    registroNotasEfetivo String?  @db.VarChar(128)
-    criadoEm             DateTime @default(now())
-    atualizadoEm         DateTime @default(now()) @updatedAt
-    deletado             Boolean  @default(false)
+// model Matricula {
+//     id                   Int      @id @default(autoincrement())
+//     imovelId             Int      @unique
+//     matriculaNr          String?
+//     matriculaDescricao   String?  @db.Text
+//     registroNotasEfetivo String?  @db.VarChar(128)
+//     criadoEm             DateTime @default(now())
+//     atualizadoEm         DateTime @default(now()) @updatedAt
+//     deletado             Boolean  @default(false)
 
-    MatriculaImovel       Imovel?        @relation(fields: [imovelId], references: [id])
-    MatriculaProprietario Proprietario[]
+//     MatriculaImovel       Imovel?        @relation(fields: [imovelId], references: [id])
+//     MatriculaProprietario Proprietario[]
 
-    @@map("matriculas")
-}
+//     @@map("matriculas")
+// }
 
 model Notificacao {
     id Int @id @default(autoincrement())
@@ -79,8 +79,8 @@ model Proprietario {
     atualizadoEm        DateTime    @default(now()) @updatedAt
     deletado            Boolean     @default(false)
 
-    ProprietarioMatricula Matricula? @relation(fields: [matriculaId], references: [id])
-    ProprietarioEndereco  Endereco[] //Relação implícita M-M (gerida pelo ORM, sem necessidade de criar tabela de junção)
+    // ProprietarioMatricula Matricula? @relation(fields: [matriculaId], references: [id])
+    ProprietarioEndereco Endereco[] //Relação implícita M-M (gerida pelo ORM, sem necessidade de criar tabela de junção)
 
     @@map("proprietarios")
 }

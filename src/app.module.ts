@@ -10,6 +10,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { Prisma2Module } from './prisma2/prisma2.module';
 import { VitalidadeModule } from './vitalidade/vitalidade.module';
 import { ConfigModule } from '@nestjs/config';
+import { CadastrosModule } from './cadastros/cadastros.module';
 
 @Global()
 @Module({
@@ -22,6 +23,7 @@ import { ConfigModule } from '@nestjs/config';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    CadastrosModule,
   ],
   controllers: [AppController],
   providers: [
