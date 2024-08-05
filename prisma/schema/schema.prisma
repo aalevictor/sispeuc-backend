@@ -56,3 +56,13 @@ model Perfil {
 
   @@map("perfis")
 }
+
+model Auditoria {
+  id            Int      @id @default(autoincrement())
+  nomeTabela    String
+  registroId    Int
+  usuarioId     String // User who made the change
+  alteracaoTipo String // CREATE, UPDATE, DELETE
+  alteracao     Json // Store details of changes
+  criadoEm      DateTime @default(now())
+}

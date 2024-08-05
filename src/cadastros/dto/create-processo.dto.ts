@@ -47,6 +47,7 @@ export class CreateProcessoDto {
   @ApiProperty()
   prospeccaoData?: Date;
 
+  // usuarioId?: string;
   //  criadoEm?: Date;
   //  atualizadoEm?: Date;
   //  arquivado?: boolean = false;

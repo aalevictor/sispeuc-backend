@@ -18,6 +18,7 @@ model Processo {
     prospeccaoOrigem    ProspeccaoOrigem?
     prospeccaoTipologia ProspeccaoTipologia?
     prospeccaoData      DateTime?
+    usuarioId           String
     criadoEm            DateTime             @default(now())
     atualizadoEm        DateTime             @default(now()) @updatedAt
     arquivado           Boolean              @default(false)
@@ -106,7 +107,7 @@ model Imovel {
     atualizadoEm                        DateTime                    @default(now()) @updatedAt
     arquivado                           Boolean                     @default(false)
 
-    imovelProcesso   Processo @relation(fields: [imovelProcessoId], references: [id])
+    imovelProcesso   Processo @relation(fields: [imovelProcessoId], references: [id], onDelete: Cascade)
     imovelProcessoId Int      @default(autoincrement())
     // Vistoria         Vistoria?
     // Matricula        Matricula?
