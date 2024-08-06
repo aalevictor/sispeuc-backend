@@ -14,9 +14,9 @@ export class CreateUsuarioDto {
   @IsString({ message: 'Tem de ser texto.' })
   nome: string;
 
-  @ApiProperty({ description: 'Login com ao menos 7 caracteres.' })
+  @ApiProperty({ description: 'Login com ao menos 5 caracteres.' })
   @IsString({ message: 'Login inválido!' })
-  @MinLength(7, { message: 'Login tem de ter ao menos 7 caracteres.' })
+  @MinLength(5, { message: 'Login tem de ter ao menos 5 caracteres.' })
   login: string;
 
   @ApiProperty({ description: 'E-mail com ao menos 7 caracteres.' })
