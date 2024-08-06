@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { IntegracoesGeosampaService } from './integracoes-geosampa.service';
-import { IntegracoesGeosampaController } from './integracoes.controller';
+import { GeosampaService } from './geosampa.service';
+import { IntegracoesController } from './integracoes.controller';
 
 @Module({
-  controllers: [IntegracoesGeosampaController],
-  providers: [IntegracoesGeosampaService],
+  controllers: [IntegracoesController],
+  providers: [GeosampaService],
 })
 export class IntegracoesModule {}
