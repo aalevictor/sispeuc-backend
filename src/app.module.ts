@@ -11,6 +11,7 @@ import { Prisma2Module } from './prisma2/prisma2.module';
 import { VitalidadeModule } from './vitalidade/vitalidade.module';
 import { ConfigModule } from '@nestjs/config';
 import { CadastrosModule } from './cadastros/cadastros.module';
+import { IntegracoesModule } from './integracoes/integracoes.module';
 
 @Global()
 @Module({
@@ -24,6 +25,7 @@ import { CadastrosModule } from './cadastros/cadastros.module';
       isGlobal: true,
     }),
     CadastrosModule,
+    IntegracoesModule,
   ],
   controllers: [AppController],
   providers: [
