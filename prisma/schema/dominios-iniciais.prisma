@@ -7,9 +7,9 @@
 
 model Processo {
     id                  Int                  @id @default(autoincrement())
-    imovelId            Int?
-    vistoriaId          Int?
-    autuacaoSei         String?              @db.VarChar
+    // imovelId            Int?
+    // vistoriaId          Int?
+    autuacaoSei         Int?                 @unique ///Nr processo SEI. Único, mas nem sempre preenchido.
     autuacaoData        DateTime?
     imovelContiguidade  Boolean              @default(false)
     estado              String?              @db.VarChar(20)
@@ -20,47 +20,53 @@ model Processo {
     prospeccaoData      DateTime?
     usuarioId           String
     criadoEm            DateTime             @default(now())
-    atualizadoEm        DateTime             @default(now()) @updatedAt
+    atualizadoEm        DateTime             @updatedAt
     arquivado           Boolean              @default(false)
 
     // ProcessoVistoria Vistoria[]
     ProcessoImovel Imovel[]
+    // Vistoria       Vistoria? @relation(fields: [vistoriaId], references: [id])
 
     @@map("processos")
 }
 
-// model Vistoria {
-//     id                            Int            @id @default(autoincrement())
-//     processoId                    Int            @unique
-//     imovelId                      Int            @unique
-//     tipoVistoria                  TipoVistoria?
-//     tipoTipologia                 TipoTipologia?
-//     tipoUso                       TipoUso?
-//     qtdePavimentos                Int?
-//     unifamiliar                   Boolean        @default(false)
-//     multifamiliar                 Boolean        @default(false)
-//     comercio                      Boolean        @default(false)
-//     servico                       Boolean        @default(false)
-//     industria                     Boolean        @default(false)
-//     usoFachadaBoaCondicao         Boolean        @default(false)
-//     usoEsquadriaBoaCondicao       Boolean        @default(false)
-//     usoPodaVegetacao              Boolean        @default(false)
-//     areaConstruidaTotalConstatada Decimal?
-//     areaLoteTotalConstatada       Decimal?
-//     indiceOcupacaoConstatado      Decimal?
-//     areaCoberturaTotalConstatada  Decimal?
-//     areaConstruidaNaoComputavel   Decimal?
-//     descricao                     String?        @db.Text
-//     dataVistoria                  DateTime?
-//     criadoEm                      DateTime       @default(now())
-//     atualizadoEm                  DateTime       @default(now()) @updatedAt
-//     deletado                      Boolean        @default(false)
+model Vistoria {
+    id                            Int            @id @default(autoincrement())
+    processoId                    Int? ///autuacaoSei. Chave humana.
+    imovelId                      Int? ///SQL. Chave humana.
+    tipoVistoria                  TipoVistoria?
+    tipoTipologia                 TipoTipologia?
+    tipoUso                       TipoUso?
+    qtdePavimentos                Int?
+    unifamiliar                   Boolean        @default(false)
+    multifamiliar                 Boolean        @default(false)
+    comercio                      Boolean        @default(false)
+    servico                       Boolean        @default(false)
+    industria                     Boolean        @default(false)
+    usoFachadaBoaCondicao         Boolean        @default(false)
+    usoEsquadriaBoaCondicao       Boolean        @default(false)
+    usoPodaVegetacao              Boolean        @default(false)
+    areaConstruidaTotalConstatada Decimal?
+    areaLoteTotalConstatada       Decimal?
+    indiceOcupacaoConstatado      Decimal?
+    areaCoberturaTotalConstatada  Decimal?
+    areaConstruidaNaoComputavel   Decimal?
+    descricao                     String?        @db.Text
+    dataVistoria                  DateTime?
+    usuarioId                     String
+    criadoEm                      DateTime       @default(now())
+    atualizadoEm                  DateTime       @updatedAt
+    deletado                      Boolean        @default(false)
 
-//     VistoriaProcesso Processo @relation(fields: [processoId], references: [id])
-//     VistoriaImovel   Imovel?  @relation(fields: [imovelId], references: [id])
+    vistoriaImovel   Imovel? @relation(fields: [vistoriaImovelId], references: [id], onDelete: Cascade)
+    vistoriaImovelId Int?
 
-//     @@map("vistorias")
-// }
+    // VistoriaProcesso Processo @relation(fields: [processoId], references: [id])
+    // VistoriaImovel   Imovel?  @relation(fields: [imovelId], references: [id])
+    // Processo Processo[]
+
+    @@map("vistorias")
+}
 
 model Prospeccao {
     id Int @id @default(autoincrement())
@@ -72,7 +78,7 @@ model Imovel {
     id                                  Int                         @id @default(autoincrement())
     // matriculaId                         Int                                    @unique
     // vistoriaId                          Int                                    @unique
-    processoId                          Int                         @default(autoincrement())
+    processoId                          Int? ///autuacaoSei. Chave humana.
     sqlSetor                            Int?
     sqlQuadra                           Int?
     sqlLote                             Int?
@@ -104,11 +110,12 @@ model Imovel {
     tombamentoCondephat                 String?
     tombamentoIphan                     String?
     criadoEm                            DateTime                    @default(now())
-    atualizadoEm                        DateTime                    @default(now()) @updatedAt
+    atualizadoEm                        DateTime                    @updatedAt
     arquivado                           Boolean                     @default(false)
 
-    imovelProcesso   Processo @relation(fields: [imovelProcessoId], references: [id], onDelete: Cascade)
-    imovelProcessoId Int      @default(autoincrement())
+    imovelProcesso   Processo   @relation(fields: [imovelProcessoId], references: [id], onDelete: Cascade)
+    imovelProcessoId Int        @default(autoincrement())
+    ImovelVistoria   Vistoria[]
     // Vistoria         Vistoria?
     // Matricula        Matricula?
 

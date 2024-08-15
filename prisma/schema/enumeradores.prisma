@@ -106,6 +106,7 @@ enum TipoPessoa {
 enum TipoVistoria {
     presencial
     remota
+    NC
 }
 
 // Domínio Inicial: Vistorias
