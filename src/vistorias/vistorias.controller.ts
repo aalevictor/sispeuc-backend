@@ -45,7 +45,7 @@ export class VistoriasController {
     return this.vistoriasService.create(usuario.id, createVistoriaDto);
   }
 
-  @Get('vistoria/buscar-tudo')
+  @Get('buscar-tudo')
   @ApiQuery({
     name: 'limit',
     required: false,
