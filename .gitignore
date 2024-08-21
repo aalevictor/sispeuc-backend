@@ -17,7 +17,7 @@ lerna-debug.log*
 .DS_Store
 
 # Scripts
-docker-init.sh
+# docker-init.sh
 
 # Tests
 /coverage

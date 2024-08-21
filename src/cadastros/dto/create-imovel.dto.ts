@@ -121,6 +121,8 @@ export class CreateImovelDto {
   @ApiProperty()
   tombamentoIphan?: string;
 
+  usuarioId: string;
+
   constructor(partial: Partial<CreateImovelDto> = {}) {
     // this.matriculaId = partial.matriculaId ?? 0; // Default value or value from partial
     // this.vistoriaId = partial.vistoriaId ?? 0;

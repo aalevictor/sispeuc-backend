@@ -13,6 +13,7 @@ import { ConfigModule } from '@nestjs/config';
 import { CadastrosModule } from './cadastros/cadastros.module';
 import { IntegracoesModule } from './integracoes/integracoes.module';
 import { VistoriasModule } from './vistorias/vistorias.module';
+import { ProspeccoesModule } from './prospeccoes/prospeccoes.module';
 
 @Global()
 @Module({
@@ -28,6 +29,7 @@ import { VistoriasModule } from './vistorias/vistorias.module';
     CadastrosModule,
     IntegracoesModule,
     VistoriasModule,
+    ProspeccoesModule,
   ],
   controllers: [AppController],
   providers: [

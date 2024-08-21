@@ -4,48 +4,43 @@ import {
   Post,
   Body,
   Patch,
+  Query,
   Param,
   Delete,
-  Query,
   UseGuards,
   NotFoundException,
 } from '@nestjs/common';
-//  UseInterceptors,
-import { VistoriasService } from './vistorias.service';
-import { CreateVistoriaDto } from './dto/create-vistoria.dto';
-import { UpdateVistoriaDto } from './dto/update-vistoria.dto';
+import { ProspeccoesService } from './prospeccoes.service';
+import { CreateProspeccaoDto } from './dto/create-prospeccao.dto';
+import { UpdateProspeccaoDto } from './dto/update-prospeccao.dto';
 import {
   Order,
   OrderByFields,
   PaginationQueryDto,
 } from 'src/common/dtos/pagination.dto';
+import { ApiBearerAuth, ApiTags, ApiQuery } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { Permissoes } from 'src/auth/decorators/permissoes.decorator';
 import { UsuarioAtual } from 'src/auth/decorators/usuario-atual.decorator';
 import { Usuario } from '@prisma/client';
-import { ApiBearerAuth, ApiTags, ApiQuery } from '@nestjs/swagger';
-import { Permissoes } from 'src/auth/decorators/permissoes.decorator';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-// import { AuditingInterceptor } from 'src/common/interceptors/auditing.interceptor';
-// import { AuditTable } from 'src/common/decorators/audit-table.decorator';
 
-@ApiTags('vistorias')
-// @UseInterceptors(AuditingInterceptor)
-// @AuditTable('vistorias')
+@ApiTags('prospecções')
 @Permissoes('ADM', 'SUP', 'DEV')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
-@Controller('vistorias')
-export class VistoriasController {
-  constructor(private readonly vistoriasService: VistoriasService) {}
+@Controller('prospeccoes')
+export class ProspeccoesController {
+  constructor(private readonly prospeccoesService: ProspeccoesService) {}
 
-  @Post('criar-vistoria')
+  @Post('criar-imovel')
   create(
     @UsuarioAtual() usuario: Usuario,
-    @Body() createVistoriaDto: CreateVistoriaDto,
+    @Body() createProspeccaoDto: CreateProspeccaoDto,
   ) {
-    return this.vistoriasService.create(usuario.id, createVistoriaDto);
+    return this.prospeccoesService.create(usuario.id, createProspeccaoDto);
   }
 
-  @Get('buscar-vistorias')
+  @Get('buscar-prospeccoes')
   @ApiQuery({
     name: 'limit',
     required: false,
@@ -67,27 +62,27 @@ export class VistoriasController {
     enum: Order,
   })
   findAll(@Query() paginationQuery: PaginationQueryDto) {
-    return this.vistoriasService.findAll(paginationQuery);
+    return this.prospeccoesService.findAll(paginationQuery);
   }
 
   @Get('buscar-vistoria/:id')
   findOne(@Param('id') id: string) {
-    return this.vistoriasService.findOne(+id);
+    return this.prospeccoesService.findOne(+id);
   }
 
-  @Patch('atualizar-vistoria/:id')
+  @Patch('atualizar-imovel/:id')
   update(
     @Param('id') id: string,
     @UsuarioAtual() usuario: Usuario,
-    @Body() updateVistoriaDto: UpdateVistoriaDto,
+    @Body() updateProspeccaoDto: UpdateProspeccaoDto,
   ) {
-    return this.vistoriasService.update(+id, usuario.id, updateVistoriaDto);
+    return this.prospeccoesService.update(+id, usuario.id, updateProspeccaoDto);
   }
 
   @Delete('excluir-vistoria/:id')
   async remove(@Param('id') id: string) {
     try {
-      await this.vistoriasService.remove(+id);
+      await this.prospeccoesService.remove(+id);
     } catch (error) {
       if (error.code === 'P2025') {
         // Prisma error: https://www.prisma.io/docs/orm/reference/error-reference

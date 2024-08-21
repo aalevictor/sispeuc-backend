@@ -41,7 +41,7 @@ export class CadastrosController {
   }
 
   @Permissoes('ADM', 'SUP', 'DEV')
-  @Get('buscar-tudo')
+  @Get('buscar-cadastros')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @ApiQuery({
@@ -101,7 +101,7 @@ export class CadastrosController {
   @Permissoes('ADM', 'SUP', 'DEV')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
-  @Delete('desativar-cadastro/:id')
+  @Delete('excluir-cadastro/:id')
   async remove(@Param('id') id: string) {
     try {
       await this.cadastrosService.remove(+id);
