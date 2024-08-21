@@ -12,6 +12,7 @@ import {
 } from '@nestjs/common';
 import { ProspeccoesService } from './prospeccoes.service';
 import { CreateProspeccaoDto } from './dto/create-prospeccao.dto';
+import { CreateManyProspeccaoDto } from './dto/createmany-prospeccao.dto';
 import { UpdateProspeccaoDto } from './dto/update-prospeccao.dto';
 import {
   Order,
@@ -40,7 +41,18 @@ export class ProspeccoesController {
     return this.prospeccoesService.create(usuario.id, createProspeccaoDto);
   }
 
-  @Get('buscar-prospeccoes')
+  @Post('criar-imoveis')
+  createMany(
+    @UsuarioAtual() usuario: Usuario,
+    @Body() createManyProspeccaoDto: CreateManyProspeccaoDto,
+  ) {
+    return this.prospeccoesService.createMany(
+      usuario.id,
+      createManyProspeccaoDto,
+    );
+  }
+
+  @Get('buscar-imoveis')
   @ApiQuery({
     name: 'limit',
     required: false,
@@ -65,7 +77,7 @@ export class ProspeccoesController {
     return this.prospeccoesService.findAll(paginationQuery);
   }
 
-  @Get('buscar-vistoria/:id')
+  @Get('buscar-imovel/:id')
   findOne(@Param('id') id: string) {
     return this.prospeccoesService.findOne(+id);
   }
@@ -79,7 +91,7 @@ export class ProspeccoesController {
     return this.prospeccoesService.update(+id, usuario.id, updateProspeccaoDto);
   }
 
-  @Delete('excluir-vistoria/:id')
+  @Delete('excluir-imovel/:id')
   async remove(@Param('id') id: string) {
     try {
       await this.prospeccoesService.remove(+id);

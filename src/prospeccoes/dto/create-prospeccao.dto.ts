@@ -20,6 +20,9 @@ export class CreateProspeccaoDto {
   @ApiProperty()
   processoId?: number;
 
+  @ApiHideProperty()
+  sqlId?: number;
+
   @ApiProperty()
   sqlSetor?: number;
 

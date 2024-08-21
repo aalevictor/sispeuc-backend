@@ -79,6 +79,7 @@ model Imovel {
     // matriculaId                         Int                                    @unique
     // vistoriaId                          Int                                    @unique
     processoId                          Int? ///autuacaoSei. Chave humana.
+    sqlId                               Int? ///SQL. Chave humana.
     sqlSetor                            Int?
     sqlQuadra                           Int?
     sqlLote                             Int?

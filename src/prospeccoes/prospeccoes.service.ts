@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateProspeccaoDto } from './dto/create-prospeccao.dto';
+import { CreateManyProspeccaoDto } from './dto/createmany-prospeccao.dto';
 import { UpdateProspeccaoDto } from './dto/update-prospeccao.dto';
 import { PaginationQueryDto } from 'src/common/dtos/pagination.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -18,6 +19,38 @@ export class ProspeccoesService {
         ...createProspeccaoDto,
         usuarioId,
       },
+    });
+  }
+
+  // async createMany(
+  //   usuarioId: string,
+  //   createManyProspeccaoDto: CreateManyProspeccaoDto,
+  // ): Promise<Imovel[] | any> {
+  //   return await this.prisma.imovel.createMany({
+  //     data: [
+  //       {
+  //         ...createManyProspeccaoDto.items,
+  //         usuarioId,
+  //       },
+  //     ],
+  //     skipDuplicates: false,
+  //   });
+  // }
+
+  async createMany(
+    usuarioId: string,
+    createManyProspeccaoDto: CreateManyProspeccaoDto,
+  ): Promise<any> {
+    const { records } = createManyProspeccaoDto;
+
+    const data = records.map((record) => ({
+      ...record,
+      usuarioId,
+    }));
+
+    return await this.prisma.imovel.createMany({
+      data,
+      skipDuplicates: false,
     });
   }
 
