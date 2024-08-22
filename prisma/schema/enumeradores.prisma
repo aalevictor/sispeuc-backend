@@ -32,36 +32,43 @@ enum EnderecoDistrito {
     sul
     leste
     oeste
+    NC
 }
 
 // Domínio Inicial: Tabela Imóvel
 enum EnderecoSubprefeitura {
     tatuape
+    NC
 }
 
 // Domínio Inicial: Tabela Imóvel
 enum EnderecoSubprefeituraSigla {
     tat
+    NC
 }
 
 // Domínio Inicial: Tabela Imóvel
 enum EnderecoMacroarea {
     centro
+    NC
 }
 
 // Domínio Inicial: Tabela Imóvel
 enum EnderecoMacroAreaSigla {
     cen
+    NC
 }
 
 // Domínio Inicial: Tabela Imóvel
 enum EnderecoZona {
     centro
+    NC
 }
 
 // Domínio Inicial: Tabela Imóvel
 enum EnderecoZonaSigla {
     cen
+    NC
 }
 
 //Domínio Geoespacial: Tabela Denúncia

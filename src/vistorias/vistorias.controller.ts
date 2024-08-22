@@ -10,7 +10,6 @@ import {
   UseGuards,
   NotFoundException,
 } from '@nestjs/common';
-//  UseInterceptors,
 import { VistoriasService } from './vistorias.service';
 import { CreateVistoriaDto } from './dto/create-vistoria.dto';
 import { UpdateVistoriaDto } from './dto/update-vistoria.dto';
@@ -24,8 +23,6 @@ import { Usuario } from '@prisma/client';
 import { ApiBearerAuth, ApiTags, ApiQuery } from '@nestjs/swagger';
 import { Permissoes } from 'src/auth/decorators/permissoes.decorator';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-// import { AuditingInterceptor } from 'src/common/interceptors/auditing.interceptor';
-// import { AuditTable } from 'src/common/decorators/audit-table.decorator';
 
 @ApiTags('vistorias')
 // @UseInterceptors(AuditingInterceptor)
@@ -45,7 +42,7 @@ export class VistoriasController {
     return this.vistoriasService.create(usuario.id, createVistoriaDto);
   }
 
-  @Get('buscar-tudo')
+  @Get('buscar-vistorias')
   @ApiQuery({
     name: 'limit',
     required: false,
@@ -84,7 +81,7 @@ export class VistoriasController {
     return this.vistoriasService.update(+id, usuario.id, updateVistoriaDto);
   }
 
-  @Delete('desativar-vistoria/:id')
+  @Delete('excluir-vistoria/:id')
   async remove(@Param('id') id: string) {
     try {
       await this.vistoriasService.remove(+id);

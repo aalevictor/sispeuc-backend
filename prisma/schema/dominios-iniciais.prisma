@@ -61,10 +61,6 @@ model Vistoria {
     vistoriaImovel   Imovel? @relation(fields: [vistoriaImovelId], references: [id], onDelete: Cascade)
     vistoriaImovelId Int?
 
-    // VistoriaProcesso Processo @relation(fields: [processoId], references: [id])
-    // VistoriaImovel   Imovel?  @relation(fields: [imovelId], references: [id])
-    // Processo Processo[]
-
     @@map("vistorias")
 }
 
@@ -79,6 +75,7 @@ model Imovel {
     // matriculaId                         Int                                    @unique
     // vistoriaId                          Int                                    @unique
     processoId                          Int? ///autuacaoSei. Chave humana.
+    sqlId                               Int? ///SQL. Chave humana.
     sqlSetor                            Int?
     sqlQuadra                           Int?
     sqlLote                             Int?
@@ -109,12 +106,13 @@ model Imovel {
     tombamentoCompresp                  String?
     tombamentoCondephat                 String?
     tombamentoIphan                     String?
+    usuarioId                           String
     criadoEm                            DateTime                    @default(now())
     atualizadoEm                        DateTime                    @updatedAt
-    arquivado                           Boolean                     @default(false)
+    deletado                            Boolean                     @default(false)
 
-    imovelProcesso   Processo   @relation(fields: [imovelProcessoId], references: [id], onDelete: Cascade)
-    imovelProcessoId Int        @default(autoincrement())
+    imovelProcesso   Processo?  @relation(fields: [imovelProcessoId], references: [id], onDelete: Cascade)
+    imovelProcessoId Int?
     ImovelVistoria   Vistoria[]
     // Vistoria         Vistoria?
     // Matricula        Matricula?

@@ -35,6 +35,8 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document);
 
   await app.listen(3000);
+  // App URL
+  console.log(`Application is running on: ${await app.getUrl()}/api`);
 
   // LDAP connection
   const server = createServer();

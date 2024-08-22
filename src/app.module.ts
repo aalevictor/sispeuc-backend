@@ -13,6 +13,8 @@ import { ConfigModule } from '@nestjs/config';
 import { CadastrosModule } from './cadastros/cadastros.module';
 import { IntegracoesModule } from './integracoes/integracoes.module';
 import { VistoriasModule } from './vistorias/vistorias.module';
+import { ProspeccoesModule } from './prospeccoes/prospeccoes.module';
+import { SalvaguardaModule } from './salvaguarda/salvaguarda.module';
 
 @Global()
 @Module({
@@ -22,12 +24,14 @@ import { VistoriasModule } from './vistorias/vistorias.module';
     PrismaModule,
     Prisma2Module,
     VitalidadeModule,
+    SalvaguardaModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
     CadastrosModule,
     IntegracoesModule,
     VistoriasModule,
+    ProspeccoesModule,
   ],
   controllers: [AppController],
   providers: [
@@ -40,6 +44,7 @@ import { VistoriasModule } from './vistorias/vistorias.module';
       provide: APP_GUARD,
       useClass: RoleGuard,
     },
+    // SalvaguardaModule,
   ],
   exports: [AppService],
 })
