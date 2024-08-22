@@ -14,6 +14,8 @@ import { CadastrosModule } from './cadastros/cadastros.module';
 import { IntegracoesModule } from './integracoes/integracoes.module';
 import { VistoriasModule } from './vistorias/vistorias.module';
 import { ProspeccoesModule } from './prospeccoes/prospeccoes.module';
+import { ArquivotecaModule } from './arquivoteca/arquivoteca.module';
+import { SalvaguardaModule } from './salvaguarda/salvaguarda.module';
 
 @Global()
 @Module({
@@ -23,6 +25,7 @@ import { ProspeccoesModule } from './prospeccoes/prospeccoes.module';
     PrismaModule,
     Prisma2Module,
     VitalidadeModule,
+    SalvaguardaModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -30,6 +33,7 @@ import { ProspeccoesModule } from './prospeccoes/prospeccoes.module';
     IntegracoesModule,
     VistoriasModule,
     ProspeccoesModule,
+    ArquivotecaModule,
   ],
   controllers: [AppController],
   providers: [
@@ -42,6 +46,7 @@ import { ProspeccoesModule } from './prospeccoes/prospeccoes.module';
       provide: APP_GUARD,
       useClass: RoleGuard,
     },
+    // SalvaguardaModule,
   ],
   exports: [AppService],
 })
