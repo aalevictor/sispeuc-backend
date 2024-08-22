@@ -9,15 +9,20 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 
 export class StorageObjectsDto {
-  @ApiProperty({ required: false })
-  @IsString()
-  @IsOptional()
-  descricao?: string;
-
   @ApiProperty({ type: 'string', format: 'number', required: false })
   @IsNumber()
   @IsOptional()
   id?: number;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  @IsOptional()
+  entityId: string;
+
+  @ApiProperty({ required: false })
+  @IsString()
+  @IsOptional()
+  descricao?: string;
 
   @ApiProperty({
     type: 'array',

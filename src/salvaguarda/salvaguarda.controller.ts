@@ -8,6 +8,8 @@ import {
   UploadedFile,
   UploadedFiles,
   UseInterceptors,
+  HttpStatus,
+  HttpException,
 } from '@nestjs/common';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { SalvaguardaService } from './salvaguarda.service';
@@ -31,8 +33,10 @@ export class SalvaguardaController {
     @UploadedFile() file: Express.Multer.File,
   ): Promise<string> {
     await this.salvaguardaService.createBucketIfNotExists();
-    const fileName = await this.salvaguardaService.uploadFile(file);
-    console.log({ storageObjectDto, fileName });
+    const fileName = await this.salvaguardaService.uploadFile(
+      file,
+      storageObjectDto.entityId,
+    );
     return fileName;
   }
 
@@ -44,8 +48,11 @@ export class SalvaguardaController {
     @UploadedFiles() files: Array<Express.Multer.File>,
   ): Promise<string[]> {
     await this.salvaguardaService.createBucketIfNotExists();
+
     const fileNames = await Promise.all(
-      files.map((file) => this.salvaguardaService.uploadFile(file)),
+      files.map((file) =>
+        this.salvaguardaService.uploadFile(file, storageObjectsDto.entityId),
+      ),
     );
     console.log({ storageObjectsDto, fileNames });
     return fileNames;
@@ -55,5 +62,17 @@ export class SalvaguardaController {
   async getFiles(@Param('fileName') fileName: string) {
     const fileUrl = await this.salvaguardaService.getFileUrl(fileName);
     return fileUrl;
+  }
+
+  @Delete('excluir/:fileName')
+  async deleteFile(@Param('fileName') fileName: string): Promise<void> {
+    try {
+      await this.salvaguardaService.deleteFile(fileName);
+    } catch (error) {
+      throw new HttpException(
+        'File not found or could not be deleted',
+        HttpStatus.NOT_FOUND,
+      );
+    }
   }
 }

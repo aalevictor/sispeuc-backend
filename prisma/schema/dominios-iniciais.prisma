@@ -61,10 +61,6 @@ model Vistoria {
     vistoriaImovel   Imovel? @relation(fields: [vistoriaImovelId], references: [id], onDelete: Cascade)
     vistoriaImovelId Int?
 
-    // VistoriaProcesso Processo @relation(fields: [processoId], references: [id])
-    // VistoriaImovel   Imovel?  @relation(fields: [imovelId], references: [id])
-    // Processo Processo[]
-
     @@map("vistorias")
 }
 

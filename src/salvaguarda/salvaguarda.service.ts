@@ -25,10 +25,21 @@ export class SalvaguardaService {
     }
   }
 
-  async uploadFile(file: Express.Multer.File): Promise<string> {
-    const sanitizedFileName = file.originalname.replace(/\s+/g, '-');
-    const fileName = `${Date.now()}-${sanitizedFileName}`;
+  async uploadFile(
+    file: Express.Multer.File,
+    entityId?: string,
+  ): Promise<string> {
+    // Sanitiza o nome do arquivo, removendo acentos e caracteres especiais
+    const sanitizedFileName = file.originalname
+      .normalize('NFD') // Normaliza o nome do arquivo
+      .replace(/[\u0300-\u036f]/g, '') // Remove marcas diacríticas
+      .replace(/\s+/g, '-') // Substitui espaços por hífens
+      .replace(/[^a-zA-Z0-9.-]/g, ''); // Remove caracteres não alfanuméricos
 
+    // Cria o nome do arquivo final, adicionando um timestamp, nome customizado, nome do arquivo e a extensão
+    const fileName = `${Date.now()}-${entityId}-${sanitizedFileName}`;
+
+    // Faz o upload do arquivo para o MinIO
     await this.minioClient.putObject(
       this.bucketName,
       fileName,
@@ -36,18 +47,21 @@ export class SalvaguardaService {
       file.size,
     );
 
-    console.log(`File uploaded successfully: ${fileName}`);
-    return fileName;
+    // Retorna a URL dinâmica, baseada em parametros.
+    const useSSL = this.configService.get('MINIO_USE_SSL') === 'true';
+    return `${useSSL ? 'https://' : 'http://'}${this.configService.get('MINIO_ENDPOINT')}:${this.configService.get('MINIO_PORT')}/${this.bucketName}/${fileName}`;
   }
 
-  async getFileUrl(fileName: string) {
-    const expires = 24 * 60 * 60;
-    return this.minioClient.presignedUrl(
+  async getFileUrl(fileName: string): Promise<string> {
+    const expires = 72 * 60 * 60;
+    const presignedUrl = await this.minioClient.presignedUrl(
       'GET',
       this.bucketName,
       fileName,
       expires,
     );
+
+    return presignedUrl;
   }
 
   async deleteFile(fileName: string) {

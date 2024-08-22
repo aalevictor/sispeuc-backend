@@ -14,7 +14,6 @@ import { CadastrosModule } from './cadastros/cadastros.module';
 import { IntegracoesModule } from './integracoes/integracoes.module';
 import { VistoriasModule } from './vistorias/vistorias.module';
 import { ProspeccoesModule } from './prospeccoes/prospeccoes.module';
-import { ArquivotecaModule } from './arquivoteca/arquivoteca.module';
 import { SalvaguardaModule } from './salvaguarda/salvaguarda.module';
 
 @Global()
@@ -33,7 +32,6 @@ import { SalvaguardaModule } from './salvaguarda/salvaguarda.module';
     IntegracoesModule,
     VistoriasModule,
     ProspeccoesModule,
-    ArquivotecaModule,
   ],
   controllers: [AppController],
   providers: [
