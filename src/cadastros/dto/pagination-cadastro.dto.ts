@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiHideProperty } from '@nestjs/swagger';
 import {
   IsOptional,
   IsInt,
@@ -54,18 +54,12 @@ export class PaginationQueryDto {
   @IsEnum(Order)
   order?: Order = Order.ASC;
 
-  @ApiProperty({
-    description: 'Buscar por autuacaoSei no modelo Processo.',
-    required: false,
-  })
+  @ApiHideProperty()
   @IsOptional()
   @IsString()
   autuacaoSei?: string;
 
-  @ApiProperty({
-    description: 'Buscar por processoId no modelo Imovel.',
-    required: false,
-  })
+  @ApiHideProperty()
   @IsOptional()
   @IsInt()
   processoId?: number;

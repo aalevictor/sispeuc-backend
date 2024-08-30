@@ -64,16 +64,16 @@ export class CadastrosController {
     required: false,
     enum: Order,
   })
-  @ApiQuery({
-    name: 'autuacaoSei',
-    required: false,
-    type: String,
-  })
-  @ApiQuery({
-    name: 'processoId',
-    required: false,
-    type: Number,
-  })
+  // @ApiQuery({
+  //   name: 'autuacaoSei',
+  //   required: false,
+  //   type: String,
+  // })
+  // @ApiQuery({
+  //   name: 'processoId',
+  //   required: false,
+  //   type: Number,
+  // })
   findAll(@Query() paginationQuery: PaginationQueryDto) {
     return this.cadastrosService.findAll(paginationQuery);
   }
