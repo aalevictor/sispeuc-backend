@@ -8,6 +8,7 @@ import {
   Delete,
   Query,
   NotFoundException,
+  UseInterceptors,
 } from '@nestjs/common';
 import { VistoriasService } from './vistorias.service';
 import { CreateVistoriaDto } from './dto/create-vistoria.dto';
@@ -21,12 +22,14 @@ import { UsuarioAtual } from 'src/auth/decorators/usuario-atual.decorator';
 import { Usuario } from '@prisma/client';
 import { ApiBearerAuth, ApiTags, ApiQuery } from '@nestjs/swagger';
 import { Permissoes } from 'src/auth/decorators/permissoes.decorator';
+import { AuditInterceptor } from 'src/common/interceptors/audit.interceptor';
 
 @ApiTags('vistorias')
 // @UseInterceptors(AuditingInterceptor)
 // @AuditTable('vistorias')
 @Permissoes('ADM', 'SUP', 'DEV')
 @ApiBearerAuth()
+@UseInterceptors(AuditInterceptor)
 @Controller('vistorias')
 export class VistoriasController {
   constructor(private readonly vistoriasService: VistoriasService) {}
@@ -81,10 +84,10 @@ export class VistoriasController {
   @Delete('excluir-vistoria/:id')
   async remove(@Param('id') id: string) {
     try {
-      await this.vistoriasService.remove(+id);
+      const result = await this.vistoriasService.remove(+id);
+      return result;
     } catch (error) {
       if (error.code === 'P2025') {
-        // Prisma error: https://www.prisma.io/docs/orm/reference/error-reference
         throw new NotFoundException(`Registro não encontrado: ${id} ${error}`);
       }
       throw error;

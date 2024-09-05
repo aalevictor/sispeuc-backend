@@ -8,6 +8,7 @@ import {
   Param,
   Delete,
   NotFoundException,
+  UseInterceptors,
 } from '@nestjs/common';
 import { ProspeccoesService } from './prospeccoes.service';
 import { CreateProspeccaoDto } from './dto/create-prospeccao.dto';
@@ -22,11 +23,13 @@ import { ApiBearerAuth, ApiTags, ApiQuery } from '@nestjs/swagger';
 import { Permissoes } from 'src/auth/decorators/permissoes.decorator';
 import { UsuarioAtual } from 'src/auth/decorators/usuario-atual.decorator';
 import { Usuario } from '@prisma/client';
+import { AuditInterceptor } from 'src/common/interceptors/audit.interceptor';
 
 @ApiTags('prospecções')
 @Permissoes('ADM', 'SUP', 'DEV')
 @ApiBearerAuth()
 @Controller('prospeccoes')
+@UseInterceptors(AuditInterceptor)
 export class ProspeccoesController {
   constructor(private readonly prospeccoesService: ProspeccoesService) {}
 
@@ -91,10 +94,10 @@ export class ProspeccoesController {
   @Delete('excluir-imovel/:id')
   async remove(@Param('id') id: string) {
     try {
-      await this.prospeccoesService.remove(+id);
+      const result = await this.prospeccoesService.remove(+id);
+      return result;
     } catch (error) {
       if (error.code === 'P2025') {
-        // Prisma error: https://www.prisma.io/docs/orm/reference/error-reference
         throw new NotFoundException(`Registro não encontrado: ${id} ${error}`);
       }
       throw error;

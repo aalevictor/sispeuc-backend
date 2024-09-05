@@ -25,21 +25,6 @@ export class CadastrosService {
         },
       });
 
-      const plainProcesso = JSON.parse(JSON.stringify(processo));
-      const plainImovel = JSON.parse(JSON.stringify(imovel));
-      await this.prisma.auditoria.create({
-        data: {
-          nomeTabela: 'Processo',
-          registroId: createdProcesso.id,
-          usuarioId: usuarioId,
-          alteracaoTipo: 'CREATE',
-          alteracao: {
-            processo: plainProcesso,
-            imovel: plainImovel,
-          },
-        },
-      });
-
       return createdProcesso;
     } catch (error) {
       console.error('Error creating processo:', error);
@@ -103,31 +88,17 @@ export class CadastrosService {
         where: { id },
         data: {
           ...processo,
+          usuarioId,
           ProcessoImovel: {
-            deleteMany: { processoId: id }, // Remove existing imovel entries related to the processo
+            deleteMany: { processoId: id },
             create: imovel.map((imovelEntry) => ({
               ...imovelEntry,
-              processoId: id, // Ensure the relationship is maintained
+              processoId: id,
             })),
           },
         },
         include: {
           ProcessoImovel: true,
-        },
-      });
-
-      const plainProcesso = JSON.parse(JSON.stringify(processo));
-      const plainImovel = JSON.parse(JSON.stringify(imovel));
-      await this.prisma.auditoria.create({
-        data: {
-          nomeTabela: 'Processo',
-          registroId: updatedProcesso.id,
-          usuarioId: usuarioId,
-          alteracaoTipo: 'UPDATE',
-          alteracao: {
-            processo: plainProcesso,
-            imovel: plainImovel,
-          },
         },
       });
 
@@ -138,18 +109,22 @@ export class CadastrosService {
     }
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: number): Promise<{ id: number; data: any }> {
     try {
-      await this.prisma.processo.delete({
+      const deletedProcesso = await this.prisma.processo.delete({
         where: { id },
+        include: {
+          ProcessoImovel: true,
+        },
       });
+
+      return {
+        id: deletedProcesso.id,
+        data: deletedProcesso,
+      };
     } catch (error) {
-      // Rethrow error for handling in the controller
+      console.error('Error deleting processo:', error);
       throw error;
     }
   }
-
-  // softDeleted() {
-  //   return this.prisma.processo.findMany({ where: { arquivado: true } });
-  // }
 }
