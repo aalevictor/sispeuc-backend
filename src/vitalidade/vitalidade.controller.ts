@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import {
   HealthCheckService,
   HttpHealthIndicator,
@@ -10,7 +10,6 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Permissoes } from 'src/auth/decorators/permissoes.decorator';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @ApiTags('vitalidade')
 @Controller('vitalidade')
@@ -27,7 +26,6 @@ export class VitalidadeController {
   @Permissoes('ADM', 'SUP', 'DEV')
   @Get()
   @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
   @HealthCheck()
   check() {
     return this.health.check([

@@ -10,7 +10,7 @@ export class StorageObjectDto {
   @ApiProperty({ required: false })
   @IsString()
   @IsOptional()
-  entityId: string;
+  entityId?: string;
 
   @ApiProperty({ required: false })
   @IsString()

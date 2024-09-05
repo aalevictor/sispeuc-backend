@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   Query,
-  UseGuards,
   NotFoundException,
 } from '@nestjs/common';
 import { VistoriasService } from './vistorias.service';
@@ -22,14 +21,12 @@ import { UsuarioAtual } from 'src/auth/decorators/usuario-atual.decorator';
 import { Usuario } from '@prisma/client';
 import { ApiBearerAuth, ApiTags, ApiQuery } from '@nestjs/swagger';
 import { Permissoes } from 'src/auth/decorators/permissoes.decorator';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @ApiTags('vistorias')
 // @UseInterceptors(AuditingInterceptor)
 // @AuditTable('vistorias')
 @Permissoes('ADM', 'SUP', 'DEV')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
 @Controller('vistorias')
 export class VistoriasController {
   constructor(private readonly vistoriasService: VistoriasService) {}

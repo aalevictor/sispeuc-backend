@@ -5,7 +5,7 @@ import { createServer } from 'ldapjs';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { snapshot: true });
 
   app.enableCors({
     origin: 'http://localhost:3001',

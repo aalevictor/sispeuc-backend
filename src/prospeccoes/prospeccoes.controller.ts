@@ -7,7 +7,6 @@ import {
   Query,
   Param,
   Delete,
-  UseGuards,
   NotFoundException,
 } from '@nestjs/common';
 import { ProspeccoesService } from './prospeccoes.service';
@@ -20,7 +19,6 @@ import {
   PaginationQueryDto,
 } from 'src/common/dtos/pagination.dto';
 import { ApiBearerAuth, ApiTags, ApiQuery } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { Permissoes } from 'src/auth/decorators/permissoes.decorator';
 import { UsuarioAtual } from 'src/auth/decorators/usuario-atual.decorator';
 import { Usuario } from '@prisma/client';
@@ -28,7 +26,6 @@ import { Usuario } from '@prisma/client';
 @ApiTags('prospecções')
 @Permissoes('ADM', 'SUP', 'DEV')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
 @Controller('prospeccoes')
 export class ProspeccoesController {
   constructor(private readonly prospeccoesService: ProspeccoesService) {}

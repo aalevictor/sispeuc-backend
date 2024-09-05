@@ -15,6 +15,7 @@ import { IntegracoesModule } from './integracoes/integracoes.module';
 import { VistoriasModule } from './vistorias/vistorias.module';
 import { ProspeccoesModule } from './prospeccoes/prospeccoes.module';
 import { SalvaguardaModule } from './salvaguarda/salvaguarda.module';
+import { DevtoolsModule } from '@nestjs/devtools-integration';
 
 @Global()
 @Module({
@@ -25,6 +26,7 @@ import { SalvaguardaModule } from './salvaguarda/salvaguarda.module';
     Prisma2Module,
     VitalidadeModule,
     SalvaguardaModule,
+    DevtoolsModule.register({ http: process.env.ENVIRONMENT !== 'production' }),
     ConfigModule.forRoot({
       isGlobal: true,
     }),
