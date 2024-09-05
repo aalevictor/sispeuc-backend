@@ -83,12 +83,18 @@ export class VistoriasService {
     });
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: number): Promise<{ id: number; data: any }> {
     try {
-      await this.prisma.vistoria.delete({
+      const deletedVistoria = await this.prisma.vistoria.delete({
         where: { id },
       });
+
+      return {
+        id: deletedVistoria.id,
+        data: deletedVistoria,
+      };
     } catch (error) {
+      console.error('Error deleting processo:', error);
       throw error;
     }
   }

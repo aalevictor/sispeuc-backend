@@ -22,21 +22,6 @@ export class ProspeccoesService {
     });
   }
 
-  // async createMany(
-  //   usuarioId: string,
-  //   createManyProspeccaoDto: CreateManyProspeccaoDto,
-  // ): Promise<Imovel[] | any> {
-  //   return await this.prisma.imovel.createMany({
-  //     data: [
-  //       {
-  //         ...createManyProspeccaoDto.items,
-  //         usuarioId,
-  //       },
-  //     ],
-  //     skipDuplicates: false,
-  //   });
-  // }
-
   async createMany(
     usuarioId: string,
     createManyProspeccaoDto: CreateManyProspeccaoDto,
@@ -95,12 +80,18 @@ export class ProspeccoesService {
     });
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: number): Promise<{ id: number; data: any }> {
     try {
-      await this.prisma.imovel.delete({
+      const deletedImovel = await this.prisma.imovel.delete({
         where: { id },
       });
+
+      return {
+        id: deletedImovel.id,
+        data: deletedImovel,
+      };
     } catch (error) {
+      console.error('Error deleting processo:', error);
       throw error;
     }
   }

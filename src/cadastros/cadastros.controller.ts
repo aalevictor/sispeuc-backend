@@ -23,13 +23,11 @@ import { ApiBearerAuth, ApiTags, ApiQuery } from '@nestjs/swagger';
 import { UsuarioAtual } from 'src/auth/decorators/usuario-atual.decorator';
 import { Usuario } from '@prisma/client';
 import { AuditInterceptor } from 'src/common/interceptors/audit.interceptor';
-import { TransformInterceptor } from 'src/common/interceptors/transform.interceptor';
 
 @ApiTags('cadastros')
 @Permissoes('ADM', 'SUP', 'DEV')
 @ApiBearerAuth()
 @UseInterceptors(AuditInterceptor)
-@UseInterceptors(TransformInterceptor)
 @Controller('cadastros')
 export class CadastrosController {
   constructor(private readonly cadastrosService: CadastrosService) {}
@@ -63,16 +61,6 @@ export class CadastrosController {
     required: false,
     enum: Order,
   })
-  // @ApiQuery({
-  //   name: 'autuacaoSei',
-  //   required: false,
-  //   type: String,
-  // })
-  // @ApiQuery({
-  //   name: 'processoId',
-  //   required: false,
-  //   type: Number,
-  // })
   findAll(@Query() paginationQuery: PaginationQueryDto) {
     return this.cadastrosService.findAll(paginationQuery);
   }
@@ -94,10 +82,10 @@ export class CadastrosController {
   @Delete('excluir-cadastro/:id')
   async remove(@Param('id') id: string) {
     try {
-      await this.cadastrosService.remove(+id);
+      const result = await this.cadastrosService.remove(+id);
+      return result;
     } catch (error) {
       if (error.code === 'P2025') {
-        // Prisma error: https://www.prisma.io/docs/orm/reference/error-reference
         throw new NotFoundException(`Registro não encontrado: ${id} ${error}`);
       }
       throw error;
