@@ -16,6 +16,7 @@ import { VistoriasModule } from './vistorias/vistorias.module';
 import { ProspeccoesModule } from './prospeccoes/prospeccoes.module';
 import { SalvaguardaModule } from './salvaguarda/salvaguarda.module';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
+import { AuditoriasModule } from './auditorias/auditorias.module';
 
 @Global()
 @Module({
@@ -34,6 +35,7 @@ import { DevtoolsModule } from '@nestjs/devtools-integration';
     IntegracoesModule,
     VistoriasModule,
     ProspeccoesModule,
+    AuditoriasModule,
   ],
   controllers: [AppController],
   providers: [
