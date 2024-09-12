@@ -103,4 +103,10 @@ export class ProspeccoesController {
       throw error;
     }
   }
+
+  @Get('quantificar-imoveis')
+  async quantificarImoveis() {
+    // Call the service method to get the counts
+    return await this.prospeccoesService.countImoveis();
+  }
 }

@@ -95,4 +95,63 @@ export class ProspeccoesService {
       throw error;
     }
   }
+
+  async countImoveis() {
+    // Contar todos os registros de Imóvel
+    const total = await this.prisma.imovel.count();
+
+    // Contar Imóveis 'Em prospecção' (onde sqlId é nulo)
+    const emProspeccao = await this.prisma.imovel.count({
+      where: {
+        sqlId: {
+          equals: null,
+        },
+      },
+    });
+
+    // Contar Imóveis 'Em preenchimento' (onde sqlId não é nulo e seiId é nulo)
+    const emPreenchimento = await this.prisma.imovel.count({
+      where: {
+        sqlId: {
+          not: null,
+        },
+        seiId: {
+          equals: null,
+        },
+      },
+    });
+
+    // Contar Imóveis 'Candidato a vistoria' (onde sqlId e seiId não são nulos e mais de 80% dos campos estão preenchidos)
+    const imoveis = await this.prisma.imovel.findMany({
+      where: {
+        sqlId: {
+          not: null,
+        },
+        seiId: {
+          not: null,
+        },
+      },
+    });
+
+    const candidatoVistoriaCount = imoveis.filter((imovel) => {
+      return this.porcentagemCamposPreenchidos(imovel) > 80;
+    }).length;
+
+    // Retornar as contagens conforme especificado
+    return {
+      Total: total,
+      'Em prospecção': emProspeccao,
+      'Em preenchimento': emPreenchimento,
+      'Candidato a vistoria': candidatoVistoriaCount,
+    };
+  }
+
+  // Função auxiliar para calcular a porcentagem de campos preenchidos em um registro de Imóvel
+  private porcentagemCamposPreenchidos(imovel: Imovel): number {
+    const camposTotal = Object.keys(imovel).length;
+    const camposPreenchidos = Object.values(imovel).filter(
+      (valor) => valor !== null && valor !== undefined,
+    ).length;
+    return (camposPreenchidos / camposTotal) * 100;
+  }
 }

@@ -74,7 +74,7 @@ model Imovel {
     id                                  Int                         @id @default(autoincrement())
     // matriculaId                         Int                                    @unique
     // vistoriaId                          Int                                    @unique
-    processoId                          Int? ///autuacaoSei. Chave humana.
+    seiId                               Int? ///autuacaoSei. Chave humana.
     sqlId                               Int? ///SQL. Chave humana.
     sqlSetor                            Int?
     sqlQuadra                           Int?
