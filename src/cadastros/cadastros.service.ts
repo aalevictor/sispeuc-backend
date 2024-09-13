@@ -90,7 +90,7 @@ export class CadastrosService {
           ...processo,
           usuarioId,
           ProcessoImovel: {
-            deleteMany: { processoId: id },
+            deleteMany: { seiId: id },
             create: imovel.map((imovelEntry) => ({
               ...imovelEntry,
               processoId: id,

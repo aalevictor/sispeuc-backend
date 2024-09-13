@@ -18,9 +18,9 @@ export class CreateProspeccaoDto {
   // vistoriaId: number;
 
   @ApiProperty()
-  processoId?: number;
+  seiId?: number;
 
-  @ApiHideProperty()
+  @ApiProperty()
   sqlId?: number;
 
   @ApiProperty()
