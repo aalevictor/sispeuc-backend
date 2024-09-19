@@ -9,7 +9,7 @@ model Processo {
     id                  Int                  @id @default(autoincrement())
     // imovelId            Int?
     // vistoriaId          Int?
-    autuacaoSei         Int?                 @unique ///Nr processo SEI. Único, mas nem sempre preenchido.
+    autuacaoSei         String?              @unique ///Nr processo SEI. Único, mas nem sempre preenchido.
     autuacaoData        DateTime?
     imovelContiguidade  Boolean              @default(false)
     estado              String?              @db.VarChar(20)
@@ -32,8 +32,8 @@ model Processo {
 
 model Vistoria {
     id                            Int            @id @default(autoincrement())
-    processoId                    Int? ///autuacaoSei. Chave humana.
-    imovelId                      Int? ///SQL. Chave humana.
+    processoId                    String? ///autuacaoSei. Chave humana.
+    imovelId                      String? ///SQL. Chave humana.
     tipoVistoria                  TipoVistoria?
     tipoTipologia                 TipoTipologia?
     tipoUso                       TipoUso?
@@ -74,8 +74,8 @@ model Imovel {
     id                                  Int                         @id @default(autoincrement())
     // matriculaId                         Int                                    @unique
     // vistoriaId                          Int                                    @unique
-    seiId                               Int? ///autuacaoSei. Chave humana.
-    sqlId                               Int? ///SQL. Chave humana.
+    seiId                               String? ///autuacaoSei. Chave humana. Usado para relacionar com o processo.
+    sqlId                               String? ///SQL. Chave humana.
     sqlSetor                            Int?
     sqlQuadra                           Int?
     sqlLote                             Int?

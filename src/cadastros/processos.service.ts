@@ -1,37 +1,26 @@
 import { ConflictException, Injectable } from '@nestjs/common';
-import { CreateCadastroDto } from './dto/create-cadastro.dto';
-import { PaginationQueryDto } from './dto/pagination-cadastro.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { CreateProcessoDto } from './dto/create-processo.dto';
+import { Processo } from '@prisma/client';
+import { UpdateProcessoDto } from './dto/update-processo.dto';
+import { PaginationQueryDto } from 'src/common/dtos/pagination.dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Injectable()
-export class CadastrosService {
+export class ProcessosService {
   constructor(private prisma: PrismaService) {}
 
-  async create(usuarioId: string, createCadastroDto: CreateCadastroDto) {
-    const { processo, imovel } = createCadastroDto;
-
+  async create(
+    usuarioId: string,
+    createProcessoDto: CreateProcessoDto,
+  ): Promise<Processo> {
     try {
-      // Criar o registro do processo
-      const createdProcesso = await this.prisma.processo.create({
+      return await this.prisma.processo.create({
         data: {
-          ...processo,
+          ...createProcessoDto,
           usuarioId,
-          ProcessoImovel: {
-            create: Array.isArray(imovel) ? imovel : [imovel],
-          },
-        },
-        include: {
-          ProcessoImovel: true,
         },
       });
-
-      const updatedProcesso = await this.prisma.processo.findUnique({
-        where: { id: createdProcesso.id },
-        include: { ProcessoImovel: true },
-      });
-
-      return updatedProcesso;
     } catch (error) {
       if (
         error instanceof PrismaClientKnownRequestError &&
@@ -46,57 +35,62 @@ export class CadastrosService {
     }
   }
 
-  async findAll(paginationQuery: PaginationQueryDto) {
+  async findAll(paginationQuery: PaginationQueryDto): Promise<Processo[]> {
     const {
       limit = 10,
       offset = 0,
       order = 'asc',
       orderBy = 'atualizadoEm',
-      autuacaoSei,
-      processoId,
     } = paginationQuery;
 
-    // OrderBy dinâmico
     const orderByFields = orderBy ? { [orderBy]: order } : undefined;
 
-    // Filtro where dinâmico
-    const where: any = { arquivado: false };
-
-    if (autuacaoSei) {
-      where.autuacaoSei = autuacaoSei;
-    }
-
-    if (processoId) {
-      where.ProcessoImovel = { some: { processoId } };
-    }
-
     return this.prisma.processo.findMany({
-      where,
       take: +limit,
       skip: +offset,
       orderBy: orderByFields,
-      include: {
-        ProcessoImovel: true,
+    });
+  }
+
+  async findOne(id: number): Promise<Processo | null> {
+    return this.prisma.processo.findUnique({
+      where: {
+        id: id,
       },
     });
   }
 
-  findOne(id: number) {
-    return this.prisma.processo.findUnique({
-      where: { id, arquivado: false },
-      include: {
-        ProcessoImovel: true,
-      },
-    });
+  async update(
+    id: number,
+    usuarioId: string,
+    updateProcessoDto: UpdateProcessoDto,
+  ): Promise<Processo> {
+    try {
+      return await this.prisma.processo.update({
+        where: { id },
+        data: {
+          ...updateProcessoDto,
+          usuarioId,
+        },
+      });
+    } catch (error) {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        const targetField = error.meta?.target ?? 'unknown field';
+        throw new ConflictException(
+          `Unique constraint failed on the field: ${targetField}`,
+        );
+      }
+      throw error;
+    }
   }
 
   async remove(id: number): Promise<{ id: number; data: any }> {
     try {
       const deletedProcesso = await this.prisma.processo.delete({
         where: { id },
-        include: {
-          ProcessoImovel: true,
-        },
       });
 
       return {

@@ -14,12 +14,8 @@ import { ProspeccoesService } from './prospeccoes.service';
 import { CreateProspeccaoDto } from './dto/create-prospeccao.dto';
 import { CreateManyProspeccaoDto } from './dto/createmany-prospeccao.dto';
 import { UpdateProspeccaoDto } from './dto/update-prospeccao.dto';
-import {
-  Order,
-  OrderByFields,
-  PaginationQueryDto,
-} from 'src/common/dtos/pagination.dto';
-import { ApiBearerAuth, ApiTags, ApiQuery } from '@nestjs/swagger';
+import { PaginationQueryDto } from 'src/common/dtos/pagination.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Permissoes } from 'src/auth/decorators/permissoes.decorator';
 import { UsuarioAtual } from 'src/auth/decorators/usuario-atual.decorator';
 import { Usuario } from '@prisma/client';
@@ -53,26 +49,6 @@ export class ProspeccoesController {
   }
 
   @Get('buscar-imoveis')
-  @ApiQuery({
-    name: 'limit',
-    required: false,
-    type: Number,
-  })
-  @ApiQuery({
-    name: 'offset',
-    required: false,
-    type: Number,
-  })
-  @ApiQuery({
-    name: 'orderBy',
-    required: false,
-    enum: OrderByFields,
-  })
-  @ApiQuery({
-    name: 'order',
-    required: false,
-    enum: Order,
-  })
   findAll(@Query() paginationQuery: PaginationQueryDto) {
     return this.prospeccoesService.findAll(paginationQuery);
   }

@@ -1,12 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsInt, Min, IsEnum, IsNotEmpty } from 'class-validator';
+import { IsOptional, IsInt, Min, IsEnum } from 'class-validator';
 
 export enum Order {
   ASC = 'asc',
   DESC = 'desc',
 }
 
-export enum OrderByFields {
+export enum OrderBy {
   CRIADO_EM = 'criadoEm',
   ATUALIZADO_EM = 'atualizadoEm',
 }
@@ -30,12 +30,11 @@ export class PaginationQueryDto {
   @ApiProperty({
     description: 'Campo para ordenação.',
     required: false,
-    enum: OrderByFields,
-    default: OrderByFields.ATUALIZADO_EM,
+    enum: OrderBy,
+    default: OrderBy.ATUALIZADO_EM,
   })
-  @IsOptional()
-  @IsEnum(OrderByFields)
-  orderBy?: OrderByFields = OrderByFields.ATUALIZADO_EM;
+  @IsEnum(OrderBy)
+  orderBy?: OrderBy = OrderBy.ATUALIZADO_EM;
 
   @ApiProperty({
     description: 'Ordem da ordenação.',
@@ -43,7 +42,6 @@ export class PaginationQueryDto {
     enum: Order,
     default: Order.ASC,
   })
-  @IsNotEmpty()
   @IsEnum(Order)
   order?: Order = Order.ASC;
 }

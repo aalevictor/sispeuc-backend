@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateProspeccaoDto } from './dto/create-prospeccao.dto';
 import { CreateManyProspeccaoDto } from './dto/createmany-prospeccao.dto';
 import { UpdateProspeccaoDto } from './dto/update-prospeccao.dto';
 import { PaginationQueryDto } from 'src/common/dtos/pagination.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Imovel } from '@prisma/client';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class ProspeccoesService {
@@ -14,12 +15,25 @@ export class ProspeccoesService {
     usuarioId: string,
     createProspeccaoDto: CreateProspeccaoDto,
   ): Promise<Imovel> {
-    return await this.prisma.imovel.create({
-      data: {
-        ...createProspeccaoDto,
-        usuarioId,
-      },
-    });
+    try {
+      return await this.prisma.imovel.create({
+        data: {
+          ...createProspeccaoDto,
+          usuarioId,
+        },
+      });
+    } catch (error) {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        const targetField = error.meta?.target ?? 'unknown field';
+        throw new ConflictException(
+          `Unique constraint failed on the field: ${targetField}`,
+        );
+      }
+      throw error;
+    }
   }
 
   async createMany(
@@ -33,10 +47,23 @@ export class ProspeccoesService {
       usuarioId,
     }));
 
-    return await this.prisma.imovel.createMany({
-      data,
-      skipDuplicates: false,
-    });
+    try {
+      return await this.prisma.imovel.createMany({
+        data,
+        skipDuplicates: false,
+      });
+    } catch (error) {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        const targetField = error.meta?.target ?? 'unknown field';
+        throw new ConflictException(
+          `Unique constraint failed on the field: ${targetField}`,
+        );
+      }
+      throw error;
+    }
   }
 
   async findAll(paginationQuery: PaginationQueryDto): Promise<Imovel[]> {
@@ -71,13 +98,26 @@ export class ProspeccoesService {
     usuarioId: string,
     updateProspeccaoDto: UpdateProspeccaoDto,
   ): Promise<Imovel> {
-    return this.prisma.imovel.update({
-      where: { id },
-      data: {
-        ...updateProspeccaoDto,
-        usuarioId,
-      },
-    });
+    try {
+      return this.prisma.imovel.update({
+        where: { id },
+        data: {
+          ...updateProspeccaoDto,
+          usuarioId,
+        },
+      });
+    } catch (error) {
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        const targetField = error.meta?.target ?? 'unknown field';
+        throw new ConflictException(
+          `Unique constraint failed on the field: ${targetField}`,
+        );
+      }
+      throw error;
+    }
   }
 
   async remove(id: number): Promise<{ id: number; data: any }> {

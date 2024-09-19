@@ -10,7 +10,7 @@ export class CreateProcessoDto {
   // vistoriaId?: number;
 
   @ApiProperty()
-  autuacaoSei?: number;
+  autuacaoSei?: string;
 
   @ApiProperty()
   autuacaoData?: Date;

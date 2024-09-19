@@ -18,10 +18,10 @@ export class CreateProspeccaoDto {
   // vistoriaId: number;
 
   @ApiProperty()
-  seiId?: number;
+  seiId?: string;
 
   @ApiProperty()
-  sqlId?: number;
+  sqlId?: string;
 
   @ApiProperty()
   sqlSetor?: number;
