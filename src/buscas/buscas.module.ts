@@ -7,6 +7,9 @@ import { ImovelBuscaStrategy } from './strategies/imovel-busca.strategy';
 import { ImovelBuscaTextoStrategy } from './strategies/imovel-busca-texto.strategy';
 import { ProcessoBuscaTextoStrategy } from './strategies/processo-busca-texto.strategy';
 import { VistoriaBuscaTextoStrategy } from './strategies/vistoria-busca-texto.strategy';
+import { ProspeccoesService } from 'src/prospeccoes/prospeccoes.service';
+import { CadastrosService } from 'src/cadastros/cadastros.service';
+import { VistoriasService } from 'src/vistorias/vistorias.service';
 
 @Module({
   imports: [],
@@ -19,6 +22,9 @@ import { VistoriaBuscaTextoStrategy } from './strategies/vistoria-busca-texto.st
     ProcessoBuscaTextoStrategy,
     ImovelBuscaStrategy,
     ImovelBuscaTextoStrategy,
+    ProspeccoesService,
+    CadastrosService,
+    VistoriasService,
   ],
 })
 export class BuscasModule {}

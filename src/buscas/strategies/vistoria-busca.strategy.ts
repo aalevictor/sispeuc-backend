@@ -6,8 +6,6 @@ export class VistoriaBuscaStrategy {
   constructor(private readonly prisma: PrismaService) {}
 
   async search(query: string) {
-    const queryInt = parseInt(query, 10);
-
     return this.prisma.vistoria.findMany({
       where: {
         OR: [
@@ -22,9 +20,6 @@ export class VistoriaBuscaStrategy {
               contains: query,
               mode: 'insensitive',
             },
-          },
-          {
-            ...(!isNaN(queryInt) && { id: queryInt }),
           },
         ],
       },
