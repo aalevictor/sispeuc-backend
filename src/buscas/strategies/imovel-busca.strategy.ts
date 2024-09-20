@@ -6,8 +6,6 @@ export class ImovelBuscaStrategy {
   constructor(private readonly prisma: PrismaService) {}
 
   async search(query: string) {
-    const queryInt = parseInt(query, 10);
-
     return this.prisma.imovel.findMany({
       where: {
         OR: [
@@ -18,7 +16,10 @@ export class ImovelBuscaStrategy {
             },
           },
           {
-            ...(!isNaN(queryInt) && { id: queryInt }),
+            seiId: {
+              contains: query,
+              mode: 'insensitive',
+            },
           },
         ],
       },

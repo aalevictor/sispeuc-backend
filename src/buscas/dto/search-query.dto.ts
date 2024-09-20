@@ -18,7 +18,6 @@ export class SearchQueryDto {
   model?: SearchType = SearchType.IMOVEL;
 
   @ApiProperty({
-    description: `Campos aceitos: \n SQL, Autuação SEI, ID`,
     required: true,
   })
   @IsNotEmpty()

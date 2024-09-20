@@ -14,6 +14,13 @@ export class BuscasController {
   constructor(private readonly buscasService: BuscasService) {}
 
   @Get('buscar-por-id')
+  async searchOne(@Query() searchQueryDto: SearchQueryDto) {
+    const { model, query } = searchQueryDto;
+    const strategy = this.buscasService.getStrategyOne(model);
+    return strategy.findOne(+query);
+  }
+
+  @Get('buscar-por-id-amigavel')
   async search(@Query() searchQueryDto: SearchQueryDto) {
     const { model, query } = searchQueryDto;
     const strategy = this.buscasService.getStrategy(model);
