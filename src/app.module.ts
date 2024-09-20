@@ -18,6 +18,7 @@ import { SalvaguardaModule } from './salvaguarda/salvaguarda.module';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
 import { AuditoriasModule } from './auditorias/auditorias.module';
 import { BuscasModule } from './buscas/buscas.module';
+import { RelacionamentosModule } from './relacionamentos/relacionamentos.module';
 
 @Global()
 @Module({
@@ -38,6 +39,7 @@ import { BuscasModule } from './buscas/buscas.module';
     ProspeccoesModule,
     AuditoriasModule,
     BuscasModule,
+    RelacionamentosModule,
   ],
   controllers: [AppController],
   providers: [

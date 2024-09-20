@@ -9,10 +9,10 @@ model Processo {
     id                  Int                  @id @default(autoincrement())
     // imovelId            Int?
     // vistoriaId          Int?
-    autuacaoSei         String?              @unique ///Nr processo SEI. Único, mas nem sempre preenchido.
+    autuacaoSei         String?              @unique //idAmigavelSei ///Nr processo SEI. Único, mas nem sempre preenchido.
     autuacaoData        DateTime?
     imovelContiguidade  Boolean              @default(false)
-    estado              String?              @db.VarChar(20)
+    estado              String?              @db.VarChar(20) //notasReferencia @db.Text
     areaConstruidaTotal Decimal?
     areaLoteTotal       Decimal?
     prospeccaoOrigem    ProspeccaoOrigem?
@@ -32,8 +32,8 @@ model Processo {
 
 model Vistoria {
     id                            Int            @id @default(autoincrement())
-    processoId                    String? ///autuacaoSei. Chave humana.
-    imovelId                      String? ///SQL. Chave humana.
+    processoId                    String? ///idAmigavelSei autuacaoSei. Chave humana.
+    imovelId                      String? ///idAmigavelSql SQL. Chave humana.
     tipoVistoria                  TipoVistoria?
     tipoTipologia                 TipoTipologia?
     tipoUso                       TipoUso?
@@ -51,15 +51,15 @@ model Vistoria {
     indiceOcupacaoConstatado      Decimal?
     areaCoberturaTotalConstatada  Decimal?
     areaConstruidaNaoComputavel   Decimal?
-    descricao                     String?        @db.Text
+    descricao                     String?        @db.Text //notasReferencia @db.Text
     dataVistoria                  DateTime?
     usuarioId                     String
     criadoEm                      DateTime       @default(now())
     atualizadoEm                  DateTime       @updatedAt
-    deletado                      Boolean        @default(false)
+    deletado                      Boolean        @default(false) //arquivado
 
     vistoriaImovel   Imovel? @relation(fields: [vistoriaImovelId], references: [id], onDelete: Cascade)
-    vistoriaImovelId Int?
+    vistoriaImovelId Int? //vistoriaImovelFk
 
     @@map("vistorias")
 }
@@ -74,15 +74,15 @@ model Imovel {
     id                                  Int                         @id @default(autoincrement())
     // matriculaId                         Int                                    @unique
     // vistoriaId                          Int                                    @unique
-    seiId                               String? ///autuacaoSei. Chave humana. Usado para relacionar com o processo.
-    sqlId                               String? ///SQL. Chave humana.
+    seiId                               String? ///idAmigavelSei autuacaoSei. Chave humana. Usado para relacionar com o processo.
+    sqlId                               String? ///idAmigavelSQL . Chave humana.
     sqlSetor                            Int?
     sqlQuadra                           Int?
     sqlLote                             Int?
     sqlDigito                           Int?
     sqlPai                              Int?
     sqlFilho                            Int?
-    registroNotasReferencia             String?                     @db.VarChar(128)
+    registroNotasReferencia             String?                     @db.VarChar(128) // notasReferencia @db.Text
     enderecoLogradouro                  String?                     @db.VarChar(256)
     enderecoNumero                      String?                     @db.VarChar(7)
     enderecoComplemento                 String?                     @db.VarChar(64)
@@ -109,10 +109,10 @@ model Imovel {
     usuarioId                           String
     criadoEm                            DateTime                    @default(now())
     atualizadoEm                        DateTime                    @updatedAt
-    deletado                            Boolean                     @default(false)
+    deletado                            Boolean                     @default(false) //arquivado
 
     imovelProcesso   Processo?  @relation(fields: [imovelProcessoId], references: [id], onDelete: Cascade)
-    imovelProcessoId Int?
+    imovelProcessoId Int? //imovelProcessoFk
     ImovelVistoria   Vistoria[]
     // Vistoria         Vistoria?
     // Matricula        Matricula?
