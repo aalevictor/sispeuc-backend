@@ -19,4 +19,11 @@ export class BuscasController {
     const strategy = this.buscasService.getStrategy(model);
     return strategy.search(query);
   }
+
+  @Get('buscar-por-texto')
+  async fulltextsearch(@Query() searchQueryDto: SearchQueryDto) {
+    const { model, query } = searchQueryDto;
+    const strategy = this.buscasService.getFullTextSearchStrategy(model);
+    return strategy.search(query);
+  }
 }
