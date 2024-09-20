@@ -55,10 +55,12 @@ export class AuditInterceptor implements NestInterceptor {
 
   private getRouteNameFromRoute(route: string): string {
     const cadastroPattern = /\/cadastros?/i;
+    const processoPattern = /\/processos?/i;
     const vistoriaPattern = /\/vistorias?/i;
     const prospeccaoPattern = /\/prospeccoes?/i;
 
     if (cadastroPattern.test(route)) return 'cadastro';
+    if (processoPattern.test(route)) return 'processo';
     if (vistoriaPattern.test(route)) return 'vistoria';
     if (prospeccaoPattern.test(route)) return 'prospeccao';
 

@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   Query,
@@ -12,14 +11,9 @@ import {
 } from '@nestjs/common';
 import { CadastrosService } from './cadastros.service';
 import { CreateCadastroDto } from './dto/create-cadastro.dto';
-import { UpdateCadastroDto } from './dto/update-cadastro.dto';
-import {
-  Order,
-  OrderByFields,
-  PaginationQueryDto,
-} from './dto/pagination-cadastro.dto';
+import { PaginationQueryDto } from './dto/pagination-cadastro.dto';
 import { Permissoes } from 'src/auth/decorators/permissoes.decorator';
-import { ApiBearerAuth, ApiTags, ApiQuery } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { UsuarioAtual } from 'src/auth/decorators/usuario-atual.decorator';
 import { Usuario } from '@prisma/client';
 import { AuditInterceptor } from 'src/common/interceptors/audit.interceptor';
@@ -41,26 +35,6 @@ export class CadastrosController {
   }
 
   @Get('buscar-cadastros')
-  @ApiQuery({
-    name: 'limit',
-    required: false,
-    type: Number,
-  })
-  @ApiQuery({
-    name: 'offset',
-    required: false,
-    type: Number,
-  })
-  @ApiQuery({
-    name: 'orderBy',
-    required: false,
-    enum: OrderByFields,
-  })
-  @ApiQuery({
-    name: 'order',
-    required: false,
-    enum: Order,
-  })
   findAll(@Query() paginationQuery: PaginationQueryDto) {
     return this.cadastrosService.findAll(paginationQuery);
   }
@@ -68,15 +42,6 @@ export class CadastrosController {
   @Get('buscar-cadastro/:id')
   findOne(@Param('id') id: string) {
     return this.cadastrosService.findOne(+id);
-  }
-
-  @Patch('atualizar-cadastro/:id')
-  async update(
-    @Param('id') id: string,
-    @Body() updateCadastroDto: UpdateCadastroDto,
-    @UsuarioAtual() usuario: Usuario,
-  ) {
-    return this.cadastrosService.update(+id, updateCadastroDto, usuario.login);
   }
 
   @Delete('excluir-cadastro/:id')

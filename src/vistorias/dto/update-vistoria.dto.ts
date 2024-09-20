@@ -17,13 +17,13 @@ export class UpdateVistoriaDto {
 
   @ApiProperty()
   @IsOptional()
-  @IsInt()
-  processoId?: number;
+  @IsString()
+  processoId?: string;
 
   @ApiProperty()
   @IsOptional()
-  @IsInt()
-  imovelId?: number;
+  @IsString()
+  imovelId?: string;
 
   @ApiProperty()
   @IsOptional()

@@ -13,20 +13,14 @@ import {
 import { VistoriasService } from './vistorias.service';
 import { CreateVistoriaDto } from './dto/create-vistoria.dto';
 import { UpdateVistoriaDto } from './dto/update-vistoria.dto';
-import {
-  Order,
-  OrderByFields,
-  PaginationQueryDto,
-} from 'src/common/dtos/pagination.dto';
+import { PaginationQueryDto } from 'src/common/dtos/pagination.dto';
 import { UsuarioAtual } from 'src/auth/decorators/usuario-atual.decorator';
 import { Usuario } from '@prisma/client';
-import { ApiBearerAuth, ApiTags, ApiQuery } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Permissoes } from 'src/auth/decorators/permissoes.decorator';
 import { AuditInterceptor } from 'src/common/interceptors/audit.interceptor';
 
 @ApiTags('vistorias')
-// @UseInterceptors(AuditingInterceptor)
-// @AuditTable('vistorias')
 @Permissoes('ADM', 'SUP', 'DEV')
 @ApiBearerAuth()
 @UseInterceptors(AuditInterceptor)
@@ -43,26 +37,6 @@ export class VistoriasController {
   }
 
   @Get('buscar-vistorias')
-  @ApiQuery({
-    name: 'limit',
-    required: false,
-    type: Number,
-  })
-  @ApiQuery({
-    name: 'offset',
-    required: false,
-    type: Number,
-  })
-  @ApiQuery({
-    name: 'orderBy',
-    required: false,
-    enum: OrderByFields,
-  })
-  @ApiQuery({
-    name: 'order',
-    required: false,
-    enum: Order,
-  })
   findAll(@Query() paginationQuery: PaginationQueryDto) {
     return this.vistoriasService.findAll(paginationQuery);
   }

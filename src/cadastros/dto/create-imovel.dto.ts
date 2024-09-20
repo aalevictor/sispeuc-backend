@@ -9,8 +9,8 @@ export class CreateImovelDto {
   // @ApiProperty()
   // vistoriaId: number;
 
-  @ApiProperty()
-  processoId: number;
+  // @ApiProperty()
+  // processoId: number;
 
   @ApiProperty()
   sqlSetor?: number;
@@ -126,7 +126,7 @@ export class CreateImovelDto {
   constructor(partial: Partial<CreateImovelDto> = {}) {
     // this.matriculaId = partial.matriculaId ?? 0; // Default value or value from partial
     // this.vistoriaId = partial.vistoriaId ?? 0;
-    this.processoId = partial.processoId ?? 0;
+    // this.processoId = partial.processoId ?? 0;
     this.sqlSetor = partial.sqlSetor ?? null;
     this.sqlQuadra = partial.sqlQuadra ?? null;
     this.sqlLote = partial.sqlLote ?? null;
