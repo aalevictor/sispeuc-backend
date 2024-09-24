@@ -67,3 +67,17 @@ model Auditoria {
   alteracao    Json
   criadoEm     DateTime @default(now())
 }
+
+model Asset {
+  id          Int      @id @default(autoincrement())
+  nomeArquivo String
+  tipo        String
+  url         String
+  criadoEm    DateTime @default(now())
+  usuarioId   String?
+
+  AssetVistoria Vistoria? @relation(fields: [vistoriaId], references: [id], onDelete: Cascade)
+  vistoriaId    Int?
+
+  @@map("assets")
+}

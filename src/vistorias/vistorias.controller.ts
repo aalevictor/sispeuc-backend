@@ -3,12 +3,12 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   Query,
   NotFoundException,
   UseInterceptors,
+  Patch,
 } from '@nestjs/common';
 import { VistoriasService } from './vistorias.service';
 import { CreateVistoriaDto } from './dto/create-vistoria.dto';

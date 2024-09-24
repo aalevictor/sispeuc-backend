@@ -58,7 +58,7 @@ export class SalvaguardaController {
     return fileNames;
   }
 
-  @Get('obter-arquivos/:fileName')
+  @Get('obter-arquivo/:fileName')
   async getFiles(@Param('fileName') fileName: string) {
     const fileUrl = await this.salvaguardaService.getFileUrl(fileName);
     return fileUrl;

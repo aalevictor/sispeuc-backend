@@ -6,13 +6,11 @@
 // lista-etapas-finais.prisma: Enumeradores de etapas finais
 
 model Processo {
-    id                  Int                  @id @default(autoincrement())
-    // imovelId            Int?
-    // vistoriaId          Int?
-    autuacaoSei         String?              @unique //idAmigavelSei ///Nr processo SEI. Único, mas nem sempre preenchido.
-    autuacaoData        DateTime?
+    id Int @id @default(autoincrement())
+
+    autuacaoSei         String?              @unique ///idAmigavelSei 
     imovelContiguidade  Boolean              @default(false)
-    estado              String?              @db.VarChar(20) //notasReferencia @db.Text
+    estado              String?              @db.VarChar(20)
     areaConstruidaTotal Decimal?
     areaLoteTotal       Decimal?
     prospeccaoOrigem    ProspeccaoOrigem?
@@ -23,17 +21,15 @@ model Processo {
     atualizadoEm        DateTime             @updatedAt
     arquivado           Boolean              @default(false)
 
-    // ProcessoVistoria Vistoria[]
     ProcessoImovel Imovel[]
-    // Vistoria       Vistoria? @relation(fields: [vistoriaId], references: [id])
 
     @@map("processos")
 }
 
 model Vistoria {
     id                            Int            @id @default(autoincrement())
-    processoId                    String? ///idAmigavelSei autuacaoSei. Chave humana.
-    imovelId                      String? ///idAmigavelSql SQL. Chave humana.
+    processoId                    String? ///idAmigavelSei 
+    imovelId                      String? ///idAmigavelSql 
     tipoVistoria                  TipoVistoria?
     tipoTipologia                 TipoTipologia?
     tipoUso                       TipoUso?
@@ -51,15 +47,16 @@ model Vistoria {
     indiceOcupacaoConstatado      Decimal?
     areaCoberturaTotalConstatada  Decimal?
     areaConstruidaNaoComputavel   Decimal?
-    descricao                     String?        @db.Text //notasReferencia @db.Text
+    descricao                     String?        @db.Text
     dataVistoria                  DateTime?
     usuarioId                     String
     criadoEm                      DateTime       @default(now())
     atualizadoEm                  DateTime       @updatedAt
     deletado                      Boolean        @default(false) //arquivado
 
+    VistoriaAsset    Asset[]
     vistoriaImovel   Imovel? @relation(fields: [vistoriaImovelId], references: [id], onDelete: Cascade)
-    vistoriaImovelId Int? //vistoriaImovelFk
+    vistoriaImovelId Int? //FK
 
     @@map("vistorias")
 }
@@ -72,17 +69,15 @@ model Prospeccao {
 
 model Imovel {
     id                                  Int                         @id @default(autoincrement())
-    // matriculaId                         Int                                    @unique
-    // vistoriaId                          Int                                    @unique
-    seiId                               String? ///idAmigavelSei autuacaoSei. Chave humana. Usado para relacionar com o processo.
-    sqlId                               String? ///idAmigavelSQL . Chave humana.
+    seiId                               String? ///idAmigavelSei 
+    sqlId                               String? ///idAmigavelSQL 
     sqlSetor                            Int?
     sqlQuadra                           Int?
     sqlLote                             Int?
     sqlDigito                           Int?
     sqlPai                              Int?
     sqlFilho                            Int?
-    registroNotasReferencia             String?                     @db.VarChar(128) // notasReferencia @db.Text
+    registroNotasReferencia             String?                     @db.VarChar(128)
     enderecoLogradouro                  String?                     @db.VarChar(256)
     enderecoNumero                      String?                     @db.VarChar(7)
     enderecoComplemento                 String?                     @db.VarChar(64)
@@ -114,8 +109,6 @@ model Imovel {
     imovelProcesso   Processo?  @relation(fields: [imovelProcessoId], references: [id], onDelete: Cascade)
     imovelProcessoId Int? //imovelProcessoFk
     ImovelVistoria   Vistoria[]
-    // Vistoria         Vistoria?
-    // Matricula        Matricula?
 
     @@map("imoveis")
 }

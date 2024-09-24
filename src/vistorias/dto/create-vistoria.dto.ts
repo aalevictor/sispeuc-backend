@@ -11,10 +11,6 @@ import { TipoVistoria, TipoTipologia, TipoUso } from '@prisma/client';
 import { ApiProperty, ApiHideProperty } from '@nestjs/swagger';
 
 export class CreateVistoriaDto {
-  @ApiHideProperty()
-  @IsInt()
-  vistoriaImovelId?: number;
-
   @ApiProperty()
   @IsOptional()
   @IsString()
@@ -119,4 +115,8 @@ export class CreateVistoriaDto {
   @IsOptional()
   @IsDate()
   dataVistoria?: Date;
+
+  @ApiHideProperty()
+  @IsOptional()
+  vistoriaImovelId?: number;
 }

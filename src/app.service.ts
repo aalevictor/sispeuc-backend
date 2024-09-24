@@ -2,13 +2,6 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AppService {
-  getHello(): { message: string } {
-    return { message: 'Hello World!' };
-  }
-  getOla(): { message: string } {
-    return { message: 'Olá, Mundo!' };
-  }
-
   verificaPagina(pagina: number, limite: number) {
     if (!pagina) pagina = 1;
     if (!limite) limite = 10;

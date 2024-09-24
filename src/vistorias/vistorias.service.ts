@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateVistoriaDto } from './dto/create-vistoria.dto';
+
 import { UpdateVistoriaDto } from './dto/update-vistoria.dto';
 import { PaginationQueryDto } from 'src/common/dtos/pagination.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -9,10 +9,7 @@ import { Vistoria } from '@prisma/client';
 export class VistoriasService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(
-    usuarioId: string,
-    createVistoriaDto: CreateVistoriaDto,
-  ): Promise<Vistoria> {
+  async create(usuarioId: string, createVistoriaDto: any): Promise<Vistoria> {
     return await this.prisma.vistoria.create({
       data: {
         ...createVistoriaDto,
@@ -45,6 +42,7 @@ export class VistoriasService {
       where: {
         id: id,
       },
+      include: { VistoriaAsset: true },
     });
   }
 

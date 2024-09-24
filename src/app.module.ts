@@ -1,5 +1,4 @@
 import { Global, Module } from '@nestjs/common';
-import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsuariosModule } from './usuarios/usuarios.module';
 import { AuthModule } from './auth/auth.module';
@@ -19,6 +18,7 @@ import { DevtoolsModule } from '@nestjs/devtools-integration';
 import { AuditoriasModule } from './auditorias/auditorias.module';
 import { BuscasModule } from './buscas/buscas.module';
 import { RelacionamentosModule } from './relacionamentos/relacionamentos.module';
+import { Vistoria2Module } from './vistoria2/vistoria2.module';
 
 @Global()
 @Module({
@@ -40,8 +40,9 @@ import { RelacionamentosModule } from './relacionamentos/relacionamentos.module'
     AuditoriasModule,
     BuscasModule,
     RelacionamentosModule,
+    Vistoria2Module,
   ],
-  controllers: [AppController],
+  controllers: [],
   providers: [
     AppService,
     {
