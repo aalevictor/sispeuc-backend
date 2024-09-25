@@ -24,7 +24,11 @@ export class CreateVistoriaDto {
   @IsString()
   imovelId?: string;
 
-  @ApiProperty()
+  @ApiProperty({
+    enum: TipoVistoria,
+    enumName: 'TipoVistoria',
+    required: false,
+  })
   @IsOptional()
   @IsEnum(TipoVistoria)
   tipoVistoria?: TipoVistoria = TipoVistoria.presencial;
@@ -38,7 +42,11 @@ export class CreateVistoriaDto {
   @IsEnum(TipoTipologia)
   tipoTipologia?: TipoTipologia = TipoTipologia.naoEdificado;
 
-  @ApiProperty()
+  @ApiProperty({
+    enum: TipoUso,
+    enumName: 'TipoUso',
+    required: false,
+  })
   @IsOptional()
   @IsEnum(TipoUso)
   tipoUso?: TipoUso = TipoUso.residencial;
