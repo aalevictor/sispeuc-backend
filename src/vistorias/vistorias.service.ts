@@ -39,16 +39,18 @@ export class VistoriasService {
         data: {
           ...createVistoriaNoFiles,
           qtdePavimentos: +createVistoriaDto.qtdePavimentos,
-          unifamiliar: createVistoriaDto.unifamiliar === false,
-          multifamiliar: createVistoriaDto.multifamiliar === false,
-          servico: createVistoriaDto.servico === false,
-          usoEsquadriaBoaCondicao:
-            createVistoriaDto.usoEsquadriaBoaCondicao === false,
-          industria: createVistoriaDto.industria === false,
-          usoPodaVegetacao: createVistoriaDto.usoPodaVegetacao === false,
-          usoFachadaBoaCondicao:
-            createVistoriaDto.usoFachadaBoaCondicao === false,
-          comercio: createVistoriaDto.comercio === false,
+          unifamiliar: this.toBoolean(createVistoriaDto.unifamiliar),
+          multifamiliar: this.toBoolean(createVistoriaDto.multifamiliar),
+          servico: this.toBoolean(createVistoriaDto.servico),
+          usoEsquadriaBoaCondicao: this.toBoolean(
+            createVistoriaDto.usoEsquadriaBoaCondicao,
+          ),
+          industria: this.toBoolean(createVistoriaDto.industria),
+          usoPodaVegetacao: this.toBoolean(createVistoriaDto.usoPodaVegetacao),
+          usoFachadaBoaCondicao: this.toBoolean(
+            createVistoriaDto.usoFachadaBoaCondicao,
+          ),
+          comercio: this.toBoolean(createVistoriaDto.comercio),
           indiceOcupacaoConstatado: +createVistoriaDto.indiceOcupacaoConstatado,
           areaCoberturaTotalConstatada:
             +createVistoriaDto.areaCoberturaTotalConstatada,
@@ -138,16 +140,18 @@ export class VistoriasService {
         data: {
           ...updateVistoriaNoFiles,
           qtdePavimentos: +updateVistoriaNoFiles.qtdePavimentos,
-          unifamiliar: updateVistoriaDto.unifamiliar === false,
-          multifamiliar: updateVistoriaDto.multifamiliar === false,
-          servico: updateVistoriaDto.servico === false,
-          usoEsquadriaBoaCondicao:
-            updateVistoriaDto.usoEsquadriaBoaCondicao === false,
-          industria: updateVistoriaDto.industria === false,
-          usoPodaVegetacao: updateVistoriaDto.usoPodaVegetacao === false,
-          usoFachadaBoaCondicao:
-            updateVistoriaDto.usoFachadaBoaCondicao === false,
-          comercio: updateVistoriaDto.comercio === false,
+          unifamiliar: this.toBoolean(updateVistoriaDto.unifamiliar),
+          multifamiliar: this.toBoolean(updateVistoriaDto.multifamiliar),
+          servico: this.toBoolean(updateVistoriaDto.servico),
+          usoEsquadriaBoaCondicao: this.toBoolean(
+            updateVistoriaDto.usoEsquadriaBoaCondicao,
+          ),
+          industria: this.toBoolean(updateVistoriaDto.industria),
+          usoPodaVegetacao: this.toBoolean(updateVistoriaDto.usoPodaVegetacao),
+          usoFachadaBoaCondicao: this.toBoolean(
+            updateVistoriaDto.usoFachadaBoaCondicao,
+          ),
+          comercio: this.toBoolean(updateVistoriaDto.comercio),
           indiceOcupacaoConstatado: +updateVistoriaDto.indiceOcupacaoConstatado,
           areaCoberturaTotalConstatada:
             +updateVistoriaDto.areaCoberturaTotalConstatada,
@@ -276,5 +280,11 @@ export class VistoriasService {
 
   private extractFileNameFromUrl(url: string): string {
     return url.split('/').pop();
+  }
+
+  private toBoolean(value: string | boolean): boolean {
+    if (typeof value === 'string') {
+      return value === 'true';
+    }
   }
 }
