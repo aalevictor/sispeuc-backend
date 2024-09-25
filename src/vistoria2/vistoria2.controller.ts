@@ -11,7 +11,8 @@ import {
   Param,
 } from '@nestjs/common';
 import { Vistoria2Service } from './vistoria2.service';
-import { CreateVistoria2Dto } from './dto/create-vistoria2.dto';
+// import { CreateVistoria2Dto } from './dto/create-vistoria2.dto';
+import { CreateVistoriaDto } from 'src/vistorias/dto/create-vistoria.dto';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -37,19 +38,19 @@ export class Vistoria2Controller {
   )
   @ApiBody({
     description: 'Create Vistoria with multiple Assets',
-    type: CreateVistoria2Dto,
+    type: CreateVistoriaDto,
   })
   @ApiResponse({ status: 201, description: 'Vistoria created successfully.' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   async createVistoria(
     @UsuarioAtual() usuarioId: { id: string }, //Usar id par maior segurança
     @Body()
-    createVistoria2Dto: CreateVistoria2Dto,
+    createVistoriaDto: CreateVistoriaDto,
     @UploadedFiles() files: Array<Express.Multer.File>,
     @Res() response,
   ) {
     const result = await this.vistoria2Service.createWithAssets(
-      createVistoria2Dto,
+      createVistoriaDto,
       files,
       usuarioId.id,
     );

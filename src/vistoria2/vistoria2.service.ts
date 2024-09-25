@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateVistoria2Dto } from './dto/create-vistoria2.dto';
+import { CreateVistoriaDto } from 'src/vistorias/dto/create-vistoria.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { SalvaguardaService } from 'src/salvaguarda/salvaguarda.service';
 
@@ -11,7 +11,7 @@ export class Vistoria2Service {
   ) {}
 
   async createWithAssets(
-    createVistoria2Dto: CreateVistoria2Dto,
+    createVistoriaDto: CreateVistoriaDto,
     files: Array<Express.Multer.File>,
     usuarioId: string,
   ) {
@@ -31,15 +31,44 @@ export class Vistoria2Service {
 
       const createdVistoria = await this.prisma.vistoria.create({
         data: {
-          ...createVistoria2Dto,
-          qtdePavimentos: +createVistoria2Dto.qtdePavimentos,
-          unifamiliar: createVistoria2Dto.unifamiliar === true,
+          ...createVistoriaDto,
+          qtdePavimentos: +createVistoriaDto.qtdePavimentos,
+          unifamiliar: createVistoriaDto.unifamiliar === false,
+          multifamiliar: createVistoriaDto.multifamiliar === false,
+          servico: createVistoriaDto.servico === false,
+          usoEsquadriaBoaCondicao:
+            createVistoriaDto.usoEsquadriaBoaCondicao === false,
+          industria: createVistoriaDto.industria === false,
+          usoPodaVegetacao: createVistoriaDto.usoPodaVegetacao === false,
+          usoFachadaBoaCondicao:
+            createVistoriaDto.usoFachadaBoaCondicao === false,
+          comercio: createVistoriaDto.comercio === false,
+          indiceOcupacaoConstatado: +createVistoriaDto.indiceOcupacaoConstatado,
+          areaCoberturaTotalConstatada:
+            +createVistoriaDto.areaCoberturaTotalConstatada,
+          areaConstruidaTotalConstatada:
+            +createVistoriaDto.areaConstruidaTotalConstatada,
+          areaLoteTotalConstatada: +createVistoriaDto.areaLoteTotalConstatada,
+          areaConstruidaNaoComputavel:
+            +createVistoriaDto.areaConstruidaNaoComputavel,
+          dataVistoria: createVistoriaDto.dataVistoria
+            ? new Date(createVistoriaDto.dataVistoria)
+            : null,
+
           usuarioId,
           VistoriaAsset: {
             create: combinedAssets,
           },
         },
       });
+      // async create(usuarioId: string, createVistoriaDto: any): Promise<Vistoria> {
+      //   return await this.prisma.vistoria.create({
+      //     data: {
+      //       ...createVistoriaDto,
+      //       usuarioId,
+      //     },
+      //   });
+      // }
 
       return await this.prisma.vistoria.findUnique({
         where: { id: createdVistoria.id },

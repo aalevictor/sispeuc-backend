@@ -1,5 +1,4 @@
 import { NestFactory } from '@nestjs/core';
-// import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { createServer } from 'ldapjs';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -12,10 +11,10 @@ async function bootstrap() {
   });
 
   // app.useGlobalPipes(
-  //   new ValidationPipe({
+  // new ValidationPipe({
   //     whitelist: true, // Remove qualquer propriedade do corpo da requisição que não esteja explicitamente definida no DTO.
   //     forbidNonWhitelisted: true, // Lança um erro se houver quaisquer propriedades no corpo da requisição que não estejam definidas no DTO.
-  //     transform: true, // Converte automaticamente os tipos das propriedades no corpo da requisição para corresponder aos tipos definidos no DTO. Ex: "123" para 123
+  // transform: true, // Converte automaticamente os tipos das propriedades no corpo da requisição para corresponder aos tipos definidos no DTO. Ex: "123" para 123
   //     transformOptions: {
   //       enableImplicitConversion: true,
   //     },

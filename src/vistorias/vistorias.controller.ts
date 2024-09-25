@@ -40,7 +40,6 @@ export class VistoriasController {
   findAll(@Query() paginationQuery: PaginationQueryDto) {
     return this.vistoriasService.findAll(paginationQuery);
   }
-
   @Get('buscar-vistoria/:id')
   findOne(@Param('id') id: string) {
     return this.vistoriasService.findOne(+id);
