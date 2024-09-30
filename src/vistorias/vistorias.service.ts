@@ -1,24 +1,85 @@
-import { Injectable } from '@nestjs/common';
-import { CreateVistoriaDto } from './dto/create-vistoria.dto';
-import { UpdateVistoriaDto } from './dto/update-vistoria.dto';
-import { PaginationQueryDto } from 'src/common/dtos/pagination.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { CreateVistoriaDto } from 'src/vistorias/dto/create-vistoria.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { SalvaguardaService } from 'src/salvaguarda/salvaguarda.service';
+import { PaginationQueryDto } from 'src/common/dtos/pagination.dto';
 import { Vistoria } from '@prisma/client';
 
 @Injectable()
 export class VistoriasService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly salvaguardaService: SalvaguardaService,
+  ) {}
 
   async create(
-    usuarioId: string,
     createVistoriaDto: CreateVistoriaDto,
-  ): Promise<Vistoria> {
-    return await this.prisma.vistoria.create({
-      data: {
-        ...createVistoriaDto,
-        usuarioId,
-      },
+    files: Array<Express.Multer.File>,
+    usuarioId: string,
+  ) {
+    const uploadPromises = files.map((file) => {
+      return this.salvaguardaService.uploadFile(file, usuarioId);
     });
+
+    try {
+      const fileUrls = await Promise.all(uploadPromises);
+
+      const combinedAssets = files.map((file, index) => ({
+        nomeArquivo: file.originalname,
+        tipo: file.mimetype,
+        url: fileUrls[index],
+        usuarioId,
+      }));
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { files: _filesFromDto, ...createVistoriaNoFiles } =
+        createVistoriaDto;
+
+      const createdVistoria = await this.prisma.vistoria.create({
+        data: {
+          ...createVistoriaNoFiles,
+          qtdePavimentos: +createVistoriaDto.qtdePavimentos,
+          unifamiliar: this.toBoolean(createVistoriaDto.unifamiliar),
+          multifamiliar: this.toBoolean(createVistoriaDto.multifamiliar),
+          servico: this.toBoolean(createVistoriaDto.servico),
+          usoEsquadriaBoaCondicao: this.toBoolean(
+            createVistoriaDto.usoEsquadriaBoaCondicao,
+          ),
+          industria: this.toBoolean(createVistoriaDto.industria),
+          usoPodaVegetacao: this.toBoolean(createVistoriaDto.usoPodaVegetacao),
+          usoFachadaBoaCondicao: this.toBoolean(
+            createVistoriaDto.usoFachadaBoaCondicao,
+          ),
+          comercio: this.toBoolean(createVistoriaDto.comercio),
+          indiceOcupacaoConstatado: +createVistoriaDto.indiceOcupacaoConstatado,
+          areaCoberturaTotalConstatada:
+            +createVistoriaDto.areaCoberturaTotalConstatada,
+          areaConstruidaTotalConstatada:
+            +createVistoriaDto.areaConstruidaTotalConstatada,
+          areaLoteTotalConstatada: +createVistoriaDto.areaLoteTotalConstatada,
+          areaConstruidaNaoComputavel:
+            +createVistoriaDto.areaConstruidaNaoComputavel,
+          dataVistoria: createVistoriaDto.dataVistoria
+            ? new Date(createVistoriaDto.dataVistoria)
+            : null,
+
+          usuarioId,
+          ...(files.length > 0 && {
+            VistoriaAsset: { create: combinedAssets },
+          }),
+        },
+      });
+
+      return await this.prisma.vistoria.findUnique({
+        where: { id: createdVistoria.id },
+        include: { VistoriaAsset: true },
+      });
+    } catch (error) {
+      console.error('Error during file upload or Vistoria creation:', error);
+      throw new Error(
+        'Failed to upload files or create Vistoria. Please try again.',
+      );
+    }
   }
 
   async findAll(paginationQuery: PaginationQueryDto): Promise<Vistoria[]> {
@@ -37,6 +98,7 @@ export class VistoriasService {
       take: +limit,
       skip: +offset,
       orderBy: orderByFields,
+      include: { VistoriaAsset: true },
     });
   }
 
@@ -45,57 +107,184 @@ export class VistoriasService {
       where: {
         id: id,
       },
+      include: { VistoriaAsset: true },
     });
   }
 
   async update(
     id: number,
+    updateVistoriaDto: CreateVistoriaDto,
+    files: Array<Express.Multer.File>,
     usuarioId: string,
-    updateVistoriaDto: UpdateVistoriaDto,
-  ): Promise<Vistoria> {
-    const { vistoriaImovelId, ...dataWithoutImovelId } = updateVistoriaDto;
-
-    const vistoriaExists = await this.prisma.vistoria.findUnique({
-      where: { id },
+  ) {
+    const uploadPromises = files.map((file) => {
+      return this.salvaguardaService.uploadFile(file, usuarioId);
     });
-    if (!vistoriaExists) {
-      throw new Error(`Vistoria with id ${id} does not exist`);
-    }
 
-    if (vistoriaImovelId) {
-      const imovelExists = await this.prisma.imovel.findUnique({
-        where: { id: vistoriaImovelId },
-      });
-      if (!imovelExists) {
-        throw new Error(`Imovel with id ${vistoriaImovelId} does not exist`);
-      }
-    }
+    try {
+      const fileUrls = await Promise.all(uploadPromises);
 
-    return await this.prisma.vistoria.update({
-      where: { id },
-      data: {
-        ...dataWithoutImovelId,
+      const combinedAssets = files.map((file, index) => ({
+        nomeArquivo: file.originalname,
+        tipo: file.mimetype,
+        url: fileUrls[index],
         usuarioId,
-        vistoriaImovel: vistoriaImovelId
-          ? { connect: { id: vistoriaImovelId } }
-          : undefined,
-      },
-    });
+      }));
+
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { files: _filesFromDto, ...updateVistoriaNoFiles } =
+        updateVistoriaDto;
+
+      const updatedVistoria = await this.prisma.vistoria.update({
+        where: { id },
+        data: {
+          ...updateVistoriaNoFiles,
+          qtdePavimentos: +updateVistoriaNoFiles.qtdePavimentos,
+          unifamiliar: this.toBoolean(updateVistoriaDto.unifamiliar),
+          multifamiliar: this.toBoolean(updateVistoriaDto.multifamiliar),
+          servico: this.toBoolean(updateVistoriaDto.servico),
+          usoEsquadriaBoaCondicao: this.toBoolean(
+            updateVistoriaDto.usoEsquadriaBoaCondicao,
+          ),
+          industria: this.toBoolean(updateVistoriaDto.industria),
+          usoPodaVegetacao: this.toBoolean(updateVistoriaDto.usoPodaVegetacao),
+          usoFachadaBoaCondicao: this.toBoolean(
+            updateVistoriaDto.usoFachadaBoaCondicao,
+          ),
+          comercio: this.toBoolean(updateVistoriaDto.comercio),
+          indiceOcupacaoConstatado: +updateVistoriaDto.indiceOcupacaoConstatado,
+          areaCoberturaTotalConstatada:
+            +updateVistoriaDto.areaCoberturaTotalConstatada,
+          areaConstruidaTotalConstatada:
+            +updateVistoriaDto.areaConstruidaTotalConstatada,
+          areaLoteTotalConstatada: +updateVistoriaDto.areaLoteTotalConstatada,
+          areaConstruidaNaoComputavel:
+            +updateVistoriaDto.areaConstruidaNaoComputavel,
+          dataVistoria: updateVistoriaDto.dataVistoria
+            ? new Date(updateVistoriaDto.dataVistoria)
+            : null,
+
+          usuarioId,
+          ...(files.length > 0 && {
+            VistoriaAsset: { create: combinedAssets },
+          }),
+        },
+      });
+
+      return await this.prisma.vistoria.findUnique({
+        where: { id: updatedVistoria.id },
+        include: { VistoriaAsset: true },
+      });
+    } catch (error) {
+      console.error('Error during file upload or Vistoria update:', error);
+      throw new Error(
+        'Failed to upload files or update Vistoria. Please try again.',
+      );
+    }
   }
 
-  async remove(id: number): Promise<{ id: number; data: any }> {
+  async removeVistoria(id: number): Promise<{ id: number; data: any }> {
     try {
-      const deletedVistoria = await this.prisma.vistoria.delete({
-        where: { id },
+      const result = await this.prisma.$transaction(async (prisma) => {
+        const vistoria = await prisma.vistoria.findUnique({
+          where: { id },
+          include: { VistoriaAsset: true },
+        });
+
+        if (!vistoria) {
+          throw new NotFoundException(`Vistoria with ID ${id} not found`);
+        }
+
+        const deletedVistoria = await prisma.vistoria.delete({
+          where: { id },
+        });
+
+        return {
+          vistoria,
+          deletedVistoria,
+        };
       });
 
+      const { vistoria } = result;
+
+      for (const asset of vistoria.VistoriaAsset) {
+        try {
+          const fileName = this.extractFileNameFromUrl(asset.url);
+
+          await this.salvaguardaService.deleteFile(fileName);
+        } catch (error) {
+          console.error(`Error deleting file ${asset.url} from Minio:`, error);
+        }
+      }
+
       return {
-        id: deletedVistoria.id,
-        data: deletedVistoria,
+        id: result.deletedVistoria.id,
+        data: result.deletedVistoria,
       };
     } catch (error) {
-      console.error('Error deleting processo:', error);
+      console.error('Error deleting Vistoria and its assets:', error);
       throw error;
+    }
+  }
+
+  async removeAsset(assetId: number): Promise<void> {
+    try {
+      const asset = await this.prisma.asset.findUnique({
+        where: { id: assetId },
+        select: { url: true, nomeArquivo: true, vistoriaId: true },
+      });
+
+      if (!asset) {
+        throw new Error('Asset not found');
+      }
+
+      const fileName = this.extractFileNameFromUrl(asset.url);
+
+      await this.prisma.asset.delete({
+        where: { id: assetId },
+      });
+
+      await this.salvaguardaService.deleteFile(fileName);
+
+      console.log(
+        `Asset with ID ${assetId} and file ${fileName} deleted successfully.`,
+      );
+    } catch (error) {
+      console.error('Error during asset deletion:', error);
+      throw new Error('Failed to delete asset or file. Please try again.');
+    }
+  }
+
+  async removeAssets(vistoriaId: number): Promise<void> {
+    try {
+      const assets = await this.prisma.asset.findMany({
+        where: { vistoriaId: +vistoriaId },
+        select: { url: true, nomeArquivo: true },
+      });
+
+      await this.prisma.asset.deleteMany({
+        where: { vistoriaId: +vistoriaId },
+      });
+
+      const deletePromises = assets.map((asset) => {
+        const fileName = this.extractFileNameFromUrl(asset.url);
+        return this.salvaguardaService.deleteFile(fileName);
+      });
+
+      await Promise.all(deletePromises);
+    } catch (error) {
+      console.error('Error during asset deletion:', error);
+      throw new Error('Failed to delete assets or files. Please try again.');
+    }
+  }
+
+  private extractFileNameFromUrl(url: string): string {
+    return url.split('/').pop();
+  }
+
+  private toBoolean(value: string | boolean): boolean {
+    if (typeof value === 'string') {
+      return value === 'true';
     }
   }
 }

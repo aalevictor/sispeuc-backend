@@ -1,5 +1,4 @@
 import { Global, Module } from '@nestjs/common';
-import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsuariosModule } from './usuarios/usuarios.module';
 import { AuthModule } from './auth/auth.module';
@@ -11,8 +10,8 @@ import { Prisma2Module } from './prisma2/prisma2.module';
 import { VitalidadeModule } from './vitalidade/vitalidade.module';
 import { ConfigModule } from '@nestjs/config';
 import { CadastrosModule } from './cadastros/cadastros.module';
-import { IntegracoesModule } from './integracoes/integracoes.module';
 import { VistoriasModule } from './vistorias/vistorias.module';
+import { IntegracoesModule } from './integracoes/integracoes.module';
 import { ProspeccoesModule } from './prospeccoes/prospeccoes.module';
 import { SalvaguardaModule } from './salvaguarda/salvaguarda.module';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
@@ -41,7 +40,7 @@ import { RelacionamentosModule } from './relacionamentos/relacionamentos.module'
     BuscasModule,
     RelacionamentosModule,
   ],
-  controllers: [AppController],
+  controllers: [],
   providers: [
     AppService,
     {

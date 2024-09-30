@@ -5,5 +5,6 @@ import { SalvaguardaController } from './salvaguarda.controller';
 @Module({
   controllers: [SalvaguardaController],
   providers: [SalvaguardaService],
+  exports: [SalvaguardaService],
 })
 export class SalvaguardaModule {}

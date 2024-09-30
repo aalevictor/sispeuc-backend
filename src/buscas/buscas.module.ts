@@ -10,9 +10,10 @@ import { VistoriaBuscaTextoStrategy } from './strategies/vistoria-busca-texto.st
 import { ProspeccoesService } from 'src/prospeccoes/prospeccoes.service';
 import { CadastrosService } from 'src/cadastros/cadastros.service';
 import { VistoriasService } from 'src/vistorias/vistorias.service';
+import { SalvaguardaModule } from 'src/salvaguarda/salvaguarda.module';
 
 @Module({
-  imports: [],
+  imports: [SalvaguardaModule],
   controllers: [BuscasController],
   providers: [
     BuscasService,
