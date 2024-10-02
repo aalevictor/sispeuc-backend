@@ -17,19 +17,19 @@ export class VistoriasService {
     files: Array<Express.Multer.File>,
     usuarioId: string,
   ) {
-    const uploadPromises = files.map((file) => {
-      return this.salvaguardaService.uploadFile(file, usuarioId);
-    });
-
     try {
-      const fileUrls = await Promise.all(uploadPromises);
+      const uploadPromises = files ? files.map((file) => {
+        return this.salvaguardaService.uploadFile(file, usuarioId);
+      }) : null;
+  
+      const fileUrls = files ? await Promise.all(uploadPromises) : null;
 
-      const combinedAssets = files.map((file, index) => ({
+      const combinedAssets = files ? files.map((file, index) => ({
         nomeArquivo: file.originalname,
         tipo: file.mimetype,
         url: fileUrls[index],
         usuarioId,
-      }));
+      })) : null;
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { files: _filesFromDto, ...createVistoriaNoFiles } =
@@ -64,7 +64,7 @@ export class VistoriasService {
             : null,
 
           usuarioId,
-          ...(files.length > 0 && {
+          ...(files && files.length > 0 && {
             VistoriaAsset: { create: combinedAssets },
           }),
         },
