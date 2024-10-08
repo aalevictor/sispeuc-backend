@@ -37,7 +37,7 @@ export class VistoriasController {
   @Post('criar-vistoria')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
-    FilesInterceptor('files', +process.env.MINIO_MAX_FILE_UPLOADS_PER_ENTITY),
+    FilesInterceptor('files'), // definir no .env número máximo de files por requisição --> +process.env.MINIO_MAX_FILE_UPLOADS_PER_ENTITY
   )
   @ApiBody({
     description: 'Create Vistoria with multiple Assets',
@@ -46,7 +46,7 @@ export class VistoriasController {
   @ApiResponse({ status: 201, description: 'Vistoria created successfully.' })
   @ApiResponse({ status: 400, description: 'Bad Request.' })
   async createVistoria(
-    @UsuarioAtual() usuarioId: { id: string }, //Usar id par maior segurança
+    @UsuarioAtual() usuarioId: { id: string }, //Usar id para maior segurança
     @Body()
     createVistoriaDto: CreateVistoriaDto,
     @UploadedFiles() files: Array<Express.Multer.File>,
@@ -57,7 +57,6 @@ export class VistoriasController {
       files,
       usuarioId.id,
     );
-
     return response.status(HttpStatus.CREATED).json(result);
   }
 
