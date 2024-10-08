@@ -13,9 +13,6 @@ export class CreateProcessoDto {
   autuacaoSei?: string;
 
   @ApiProperty()
-  autuacaoData?: Date;
-
-  @ApiProperty()
   imovelContiguidade: boolean = false;
 
   @MinLength(20)
