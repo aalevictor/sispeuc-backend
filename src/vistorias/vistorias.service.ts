@@ -18,10 +18,7 @@ export class VistoriasService {
     usuarioId: string,
   ) {
     try {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { files: _filesFromDto, ...createVistoriaNoFiles } =
-        createVistoriaDto;
-
+      const { files: _filesFromDto, ...createVistoriaNoFiles } = createVistoriaDto;
       const createdVistoria = await this.prisma.vistoria.create({
         data: {
           ...createVistoriaNoFiles,
@@ -49,27 +46,22 @@ export class VistoriasService {
           dataVistoria: createVistoriaDto.dataVistoria
             ? new Date(createVistoriaDto.dataVistoria)
             : null,
-
           usuarioId
         },
         include: { VistoriaAsset: true }
       });
-
       if (createdVistoria && files && files.length > 0) {
-        const uploadPromises = files.map((file) => {
-          return this.salvaguardaService.uploadFile(file, usuarioId);
+        const uploadPromises: Promise<string>[] = files.map((file) => {
+          return this.salvaguardaService.uploadFile(file, usuarioId)
         });
-  
-        const fileUrls = await Promise.all(uploadPromises);
-
+        const fileUrls: string[] = await Promise.all(uploadPromises);
         const combinedAssets = files.map((file, index) => ({
           nomeArquivo: file.originalname,
           tipo: file.mimetype,
           url: fileUrls[index],
           usuarioId,
         }));
-
-        const updateVistoriaAssets = await this.prisma.vistoria.update({
+        const updatedVistoriaAssets = await this.prisma.vistoria.update({
           where: {
             id: createdVistoria.id
           },
@@ -80,16 +72,11 @@ export class VistoriasService {
           },
           include: { VistoriaAsset: true }
         });
-
-        if (!updateVistoriaAssets) 
-          throw new Error('Erro ao subir arquivo e atualizar objeto de vistoria');
-
-        return updateVistoriaAssets;
+        if (!updatedVistoriaAssets) throw new Error('Erro ao subir arquivo e atualizar objeto de vistoria');
+        return updatedVistoriaAssets;
       }
-      
       return createdVistoria;
     } catch (error) {
-      console.error('Error during file upload or Vistoria creation:', error);
       throw new Error(
         'Failed to upload files or create Vistoria. Please try again.',
       );
