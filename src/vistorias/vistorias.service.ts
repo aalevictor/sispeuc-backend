@@ -17,20 +17,7 @@ export class VistoriasService {
     files: Array<Express.Multer.File>,
     usuarioId: string,
   ) {
-    const uploadPromises = files.map((file) => {
-      return this.salvaguardaService.uploadFile(file, usuarioId);
-    });
-
     try {
-      const fileUrls = await Promise.all(uploadPromises);
-
-      const combinedAssets = files.map((file, index) => ({
-        nomeArquivo: file.originalname,
-        tipo: file.mimetype,
-        url: fileUrls[index],
-        usuarioId,
-      }));
-
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { files: _filesFromDto, ...createVistoriaNoFiles } =
         createVistoriaDto;
@@ -63,17 +50,44 @@ export class VistoriasService {
             ? new Date(createVistoriaDto.dataVistoria)
             : null,
 
-          usuarioId,
-          ...(files.length > 0 && {
-            VistoriaAsset: { create: combinedAssets },
-          }),
+          usuarioId
         },
+        include: { VistoriaAsset: true }
       });
 
-      return await this.prisma.vistoria.findUnique({
-        where: { id: createdVistoria.id },
-        include: { VistoriaAsset: true },
-      });
+      if (createdVistoria && files && files.length > 0) {
+        const uploadPromises = files.map((file) => {
+          return this.salvaguardaService.uploadFile(file, usuarioId);
+        });
+  
+        const fileUrls = await Promise.all(uploadPromises);
+
+        const combinedAssets = files.map((file, index) => ({
+          nomeArquivo: file.originalname,
+          tipo: file.mimetype,
+          url: fileUrls[index],
+          usuarioId,
+        }));
+
+        const updateVistoriaAssets = await this.prisma.vistoria.update({
+          where: {
+            id: createdVistoria.id
+          },
+          data: {
+            ...(combinedAssets && combinedAssets.length > 0 && {
+              VistoriaAsset: { create: combinedAssets },
+            }),
+          },
+          include: { VistoriaAsset: true }
+        });
+
+        if (!updateVistoriaAssets) 
+          throw new Error('Erro ao subir arquivo e atualizar objeto de vistoria');
+
+        return updateVistoriaAssets;
+      }
+      
+      return createdVistoria;
     } catch (error) {
       console.error('Error during file upload or Vistoria creation:', error);
       throw new Error(

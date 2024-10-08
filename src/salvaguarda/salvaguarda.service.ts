@@ -100,7 +100,6 @@ export class SalvaguardaService {
     try {
       const url = new URL(fileUrl);
       const objectKey = url.pathname.replace(/^\/sispeucdev\//, '');
-
       await this.minioClient.removeObject(
         process.env.MINIO_BUCKET_NAME,
         objectKey,
