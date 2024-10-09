@@ -50,31 +50,8 @@ export class VistoriasService {
         },
         include: { VistoriaAsset: true }
       });
-      if (createdVistoria && files && files.length > 0) {
-        const uploadPromises: Promise<string>[] = files.map((file) => {
-          return this.salvaguardaService.uploadFile(file, usuarioId)
-        });
-        const fileUrls: string[] = await Promise.all(uploadPromises);
-        const combinedAssets = files.map((file, index) => ({
-          nomeArquivo: file.originalname,
-          tipo: file.mimetype,
-          url: fileUrls[index],
-          usuarioId,
-        }));
-        const updatedVistoriaAssets = await this.prisma.vistoria.update({
-          where: {
-            id: createdVistoria.id
-          },
-          data: {
-            ...(combinedAssets && combinedAssets.length > 0 && {
-              VistoriaAsset: { create: combinedAssets },
-            }),
-          },
-          include: { VistoriaAsset: true }
-        });
-        if (!updatedVistoriaAssets) throw new Error('Erro ao subir arquivo e atualizar objeto de vistoria');
-        return updatedVistoriaAssets;
-      }
+      if (createdVistoria && files && files.length > 0) 
+        return await this.updateFileOnVistoria(createdVistoria, files);
       return createdVistoria;
     } catch (error) {
       throw new Error(
@@ -287,5 +264,36 @@ export class VistoriasService {
     if (typeof value === 'string') {
       return value === 'true';
     }
+  }
+
+  private async updateFileOnVistoria(
+    vistoria, 
+    files: Array<Express.Multer.File>
+  ) {
+    const usuarioId: string = vistoria.usuarioId;
+    const uploadPromises: Promise<string>[] = files.map((file) => {
+      return this.salvaguardaService.uploadFile(file, usuarioId);
+    });
+    const fileUrls: string[] = await Promise.all(uploadPromises);
+    const combinedAssets = files.map((file, index) => ({
+      nomeArquivo: file.originalname,
+      tipo: file.mimetype,
+      url: fileUrls[index],
+      usuarioId
+    }));
+    const updatedVistoriaAssets = await this.prisma.vistoria.update({
+      where: {
+        id: vistoria.id
+      },
+      data: {
+        ...(combinedAssets && combinedAssets.length > 0 && {
+          VistoriaAsset: { create: combinedAssets },
+        }),
+      },
+      include: { VistoriaAsset: true }
+    });
+    if (!updatedVistoriaAssets) 
+      throw new Error('Erro ao subir arquivo e atualizar objeto de vistoria');
+    return updatedVistoriaAssets;
   }
 }
