@@ -83,7 +83,7 @@ model Imovel {
     enderecoComplemento                 String?                     @db.VarChar(64)
     enderecoReferencia                  String?                     @db.VarChar(256)
     enderecoDistrito                    EnderecoDistrito?
-    enderecoCep                         String?                     @db.VarChar(7)
+    enderecoCep                         String?                     @db.VarChar(8)
     enderecoSubprefeitura               EnderecoSubprefeitura?
     enderecoSubprefeituraSigla          EnderecoSubprefeituraSigla?
     enderecoMacroarea                   EnderecoMacroarea?
