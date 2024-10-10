@@ -107,7 +107,7 @@ export class VistoriasController {
   @ApiResponse({ status: 404, description: 'Asset not found.' })
   @ApiResponse({ status: 500, description: 'Failed to delete asset or file.' })
   async removeAsset(@Param('id') id: number): Promise<void> {
-    await this.vistoriasService.removeAsset(+id);
+    return await this.vistoriasService.removeAsset(+id);
   }
 
   @Delete('excluir-anexos/:vistoriaId')

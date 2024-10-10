@@ -126,7 +126,6 @@ export class VistoriasService {
           dataVistoria: updateVistoriaDto.dataVistoria
             ? new Date(updateVistoriaDto.dataVistoria)
             : null,
-
           usuarioId
         },
         include: { VistoriaAsset: true }
