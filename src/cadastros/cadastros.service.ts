@@ -10,7 +10,8 @@ export class CadastrosService {
 
   async create(usuarioId: string, createCadastroDto: CreateCadastroDto) {
     const { processo, imovel } = createCadastroDto;
-
+    console.log(imovel);
+    
     try {
       // Criar o registro do processo
       const createdProcesso = await this.prisma.processo.create({
@@ -30,9 +31,10 @@ export class CadastrosService {
         where: { id: createdProcesso.id },
         include: { ProcessoImovel: true },
       });
-
-      return updatedProcesso;
+      return createdProcesso;
     } catch (error) {
+      console.log(error);
+      
       if (
         error instanceof PrismaClientKnownRequestError &&
         error.code === 'P2002'
