@@ -72,7 +72,7 @@ export class VistoriasController {
   @Patch('atualizar-vistoria/:id')
   @ApiConsumes('multipart/form-data')
   @UseInterceptors(
-    FilesInterceptor('files', +process.env.MINIO_MAX_FILE_UPLOADS_PER_ENTITY),
+    FilesInterceptor('files'), // +process.env.MINIO_MAX_FILE_UPLOADS_PER_ENTITY
   )
   @ApiBody({
     description: 'Update Vistoria with multiple Assets',

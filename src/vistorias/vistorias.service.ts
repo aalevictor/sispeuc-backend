@@ -4,6 +4,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { SalvaguardaService } from 'src/salvaguarda/salvaguarda.service';
 import { PaginationQueryDto } from 'src/common/dtos/pagination.dto';
 import { Vistoria } from '@prisma/client';
+import { VistoriaAsset, VistoriaResponseDto } from './dto/vistoria-response.dto';
 
 @Injectable()
 export class VistoriasService {
@@ -19,7 +20,7 @@ export class VistoriasService {
   ) {
     try {
       const { files: _filesFromDto, ...createVistoriaNoFiles } = createVistoriaDto;
-      const createdVistoria = await this.prisma.vistoria.create({
+      const createdVistoria: VistoriaResponseDto = await this.prisma.vistoria.create({
         data: {
           ...createVistoriaNoFiles,
           qtdePavimentos: +createVistoriaDto.qtdePavimentos,
@@ -95,25 +96,9 @@ export class VistoriasService {
     files: Array<Express.Multer.File>,
     usuarioId: string,
   ) {
-    const uploadPromises = files.map((file) => {
-      return this.salvaguardaService.uploadFile(file, usuarioId);
-    });
-
     try {
-      const fileUrls = await Promise.all(uploadPromises);
-
-      const combinedAssets = files.map((file, index) => ({
-        nomeArquivo: file.originalname,
-        tipo: file.mimetype,
-        url: fileUrls[index],
-        usuarioId,
-      }));
-
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { files: _filesFromDto, ...updateVistoriaNoFiles } =
-        updateVistoriaDto;
-
-      const updatedVistoria = await this.prisma.vistoria.update({
+      const { files: _filesFromDto, ...updateVistoriaNoFiles } = updateVistoriaDto;
+      const updatedVistoria: VistoriaResponseDto = await this.prisma.vistoria.update({
         where: { id },
         data: {
           ...updateVistoriaNoFiles,
@@ -142,17 +127,13 @@ export class VistoriasService {
             ? new Date(updateVistoriaDto.dataVistoria)
             : null,
 
-          usuarioId,
-          ...(files.length > 0 && {
-            VistoriaAsset: { create: combinedAssets },
-          }),
+          usuarioId
         },
+        include: { VistoriaAsset: true }
       });
-
-      return await this.prisma.vistoria.findUnique({
-        where: { id: updatedVistoria.id },
-        include: { VistoriaAsset: true },
-      });
+      if (updatedVistoria && files && files.length > 0) 
+        return await this.updateFileOnVistoria(updatedVistoria, files);
+      return updatedVistoria;
     } catch (error) {
       console.error('Error during file upload or Vistoria update:', error);
       throw new Error(
@@ -267,20 +248,20 @@ export class VistoriasService {
   }
 
   private async updateFileOnVistoria(
-    vistoria, 
+    vistoria: VistoriaResponseDto, 
     files: Array<Express.Multer.File>
   ) {
     const usuarioId: string = vistoria.usuarioId;
-    const uploadPromises: Promise<string>[] = files.map((file) => {
-      return this.salvaguardaService.uploadFile(file, usuarioId);
+    const uploads = files.map(async (file) => {
+      const fileUrl = await this.salvaguardaService.uploadFile(file, usuarioId)
+      return {
+        nomeArquivo: file.originalname,
+        tipo: file.mimetype,
+        url: fileUrl,
+        usuarioId
+      };
     });
-    const fileUrls: string[] = await Promise.all(uploadPromises);
-    const combinedAssets = files.map((file, index) => ({
-      nomeArquivo: file.originalname,
-      tipo: file.mimetype,
-      url: fileUrls[index],
-      usuarioId
-    }));
+    const combinedAssets = await Promise.all(uploads);
     const updatedVistoriaAssets = await this.prisma.vistoria.update({
       where: {
         id: vistoria.id

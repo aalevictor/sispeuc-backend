@@ -1,5 +1,6 @@
 import { ApiHideProperty, ApiProperty } from "@nestjs/swagger";
 import { TipoTipologia, TipoUso, TipoVistoria } from "@prisma/client";
+import { Decimal } from "@prisma/client/runtime/library";
 import { Transform, Type } from "class-transformer";
 import { IsArray, IsBoolean, IsDate, IsDecimal, IsEnum, IsInt, IsOptional, IsString, ValidateNested } from "class-validator";
 
@@ -98,34 +99,31 @@ export class VistoriaResponseDto {
   usoPodaVegetacao?: boolean = false;
 
   @ApiProperty()
-  @Transform(({ value }) => parseFloat(value), { toClassOnly: true })
+  // @Transform(({ value }) => parseFloat(value), { toClassOnly: true })
   @IsOptional()
-  @IsDecimal()
-  areaConstruidaTotalConstatada?: number;
+  areaConstruidaTotalConstatada?: Decimal;
 
   @ApiProperty()
-  @Transform(({ value }) => parseFloat(value), { toClassOnly: true })
+  // @Transform(({ value }) => parseFloat(value), { toClassOnly: true })
   @IsOptional()
-  @IsDecimal()
-  areaLoteTotalConstatada?: number;
+  areaLoteTotalConstatada?: Decimal;
 
   @ApiProperty()
-  @Transform(({ value }) => parseFloat(value), { toClassOnly: true })
+  // @Transform(({ value }) => parseFloat(value), { toClassOnly: true })
   @IsOptional()
-  @IsDecimal()
-  indiceOcupacaoConstatado?: number;
+  indiceOcupacaoConstatado?: Decimal;
 
   @ApiProperty()
-  @Transform(({ value }) => parseFloat(value), { toClassOnly: true })
+  // @Transform(({ value }) => parseFloat(value), { toClassOnly: true })
   @IsOptional()
-  @IsDecimal()
-  areaCoberturaTotalConstatada?: number;
+  // @IsDecimal()
+  areaCoberturaTotalConstatada?: Decimal;
 
   @ApiProperty()
-  @Transform(({ value }) => parseFloat(value), { toClassOnly: true })
+  // @Transform(({ value }) => parseFloat(value), { toClassOnly: true })
   @IsOptional()
-  @IsDecimal()
-  areaConstruidaNaoComputavel?: number;
+  // @IsDecimal()
+  areaConstruidaNaoComputavel?: Decimal;
 
   @ApiProperty()
   @IsOptional()
