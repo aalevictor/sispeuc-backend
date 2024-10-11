@@ -86,7 +86,11 @@ export class VistoriasService {
       where: {
         id: id,
       },
-      include: { VistoriaAsset: true },
+      include: { 
+        VistoriaAsset: { 
+            orderBy: { nomeArquivo: 'asc' } 
+        } 
+      },
     });
   }
 
