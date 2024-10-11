@@ -156,12 +156,12 @@ export class VistoriaResponseDto {
   vistoriaImovelId?: number;
 
   @ApiProperty()
-  VistoriaAsset: Array<VistoriaAsset>;
+  VistoriaAsset: Array<VistoriaAssetDto>;
 }
 
-export class VistoriaAsset {
+export class VistoriaAssetDto {
   @ApiProperty()
-  id: number;
+  id?: number;
   @ApiProperty()
   nomeArquivo: string;
   @ApiProperty()
@@ -169,9 +169,9 @@ export class VistoriaAsset {
   @ApiProperty()
   url: string;
   @ApiProperty()
-  criadoEm: Date;
+  criadoEm?: Date;
   @ApiProperty()
   usuarioId: string;
   @ApiProperty()
-  vistoriaId: number;
+  vistoriaId?: number;
 }

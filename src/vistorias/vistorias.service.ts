@@ -4,7 +4,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { SalvaguardaService } from 'src/salvaguarda/salvaguarda.service';
 import { PaginationQueryDto } from 'src/common/dtos/pagination.dto';
 import { Vistoria } from '@prisma/client';
-import { VistoriaAsset, VistoriaResponseDto } from './dto/vistoria-response.dto';
+import { VistoriaAssetDto, VistoriaResponseDto } from './dto/vistoria-response.dto';
 
 @Injectable()
 export class VistoriasService {
@@ -249,10 +249,11 @@ export class VistoriasService {
   private async updateFileOnVistoria(
     vistoria: VistoriaResponseDto, 
     files: Array<Express.Multer.File>
-  ) {
+  ): Promise<VistoriaResponseDto> {
     const usuarioId: string = vistoria.usuarioId;
-    const uploads = files.map(async (file) => {
-      const fileUrl = await this.salvaguardaService.uploadFile(file, usuarioId)
+    const uploads: Promise<VistoriaAssetDto>[] = files.map(async (file) => {
+      const fileUrl: string = await this.salvaguardaService
+        .uploadFile(file, usuarioId)
       return {
         nomeArquivo: file.originalname,
         tipo: file.mimetype,
@@ -260,11 +261,9 @@ export class VistoriasService {
         usuarioId
       };
     });
-    const combinedAssets = await Promise.all(uploads);
-    const updatedVistoriaAssets = await this.prisma.vistoria.update({
-      where: {
-        id: vistoria.id
-      },
+    const combinedAssets: VistoriaAssetDto[] = await Promise.all(uploads);
+    const updatedVistoriaAssets: VistoriaResponseDto = await this.prisma.vistoria.update({
+      where: { id: vistoria.id },
       data: {
         ...(combinedAssets && combinedAssets.length > 0 && {
           VistoriaAsset: { create: combinedAssets },
