@@ -37,8 +37,12 @@ export class ProcessosController {
   }
 
   @Get('buscar-processos')
-  findAll(@Query() paginationQuery: PaginationQueryDto) {
-    return this.processosService.findAll(paginationQuery);
+  findAll(
+    @Query('pagina') pagina?: string,
+    @Query('limite') limite?: string,
+    @Query('busca') busca?: string,
+  ) {
+    return this.processosService.findAll(+pagina, +limite, busca);
   }
 
   @Get('buscar-processo/:id')

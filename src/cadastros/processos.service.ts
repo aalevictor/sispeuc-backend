@@ -3,12 +3,15 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateProcessoDto } from './dto/create-processo.dto';
 import { Processo } from '@prisma/client';
 import { UpdateProcessoDto } from './dto/update-processo.dto';
-import { PaginationQueryDto } from 'src/common/dtos/pagination.dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { AppService } from 'src/app.service';
 
 @Injectable()
 export class ProcessosService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private app: AppService
+  ) { }
 
   async create(
     usuarioId: string,
@@ -35,21 +38,39 @@ export class ProcessosService {
     }
   }
 
-  async findAll(paginationQuery: PaginationQueryDto): Promise<Processo[]> {
-    const {
-      limit = 10,
-      offset = 0,
-      order = 'asc',
-      orderBy = 'atualizadoEm',
-    } = paginationQuery;
-
-    const orderByFields = orderBy ? { [orderBy]: order } : undefined;
-
-    return this.prisma.processo.findMany({
-      take: +limit,
-      skip: +offset,
-      orderBy: orderByFields,
+  async findAll(
+    pagina: number = 1,
+    limite: number = 10,
+    busca?: string
+  ) {
+    [pagina, limite] = this.app.verificaPagina(pagina, limite);
+    const searchParams = {
+      ...(busca ?
+        {
+          OR: [
+            { autuacaoSei: { contains: busca } },
+            { ProcessoImovel: { some: { enderecoLogradouro: { contains: busca } } } }
+          ]
+        } :
+        {}),
+    };
+    const total = await this.prisma.processo.count({ where: searchParams });
+    if (total == 0) return { total: 0, pagina: 0, limite: 0, users: [] };
+    [pagina, limite] = this.app.verificaLimite(pagina, limite, total);
+    const subprefeituras = await this.prisma.processo.findMany({
+      where: searchParams,
+      skip: (pagina - 1) * limite,
+      take: limite,
+      include: {
+        ProcessoImovel: true
+      }
     });
+    return {
+      total: +total,
+      pagina: +pagina,
+      limite: +limite,
+      data: subprefeituras
+    };
   }
 
   async findOne(id: number): Promise<Processo | null> {
