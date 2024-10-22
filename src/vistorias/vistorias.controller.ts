@@ -65,8 +65,11 @@ export class VistoriasController {
     @Query('pagina') pagina: string = '1',
     @Query('limite') limite: string = '10',
     @Query('busca') busca?: string,
+    @Query('status') status?: string,
   ) {
-    return this.vistoriasService.findAll(+pagina, +limite, busca);
+    console.log(status);
+    
+    return this.vistoriasService.findAll(+pagina, +limite, busca, status == 'true' ? true : false);
   }
   @Get('buscar-vistoria/:id')
   findOne(@Param('id') id: string) {

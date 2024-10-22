@@ -6,6 +6,8 @@ import { PaginationQueryDto } from 'src/common/dtos/pagination.dto';
 import { Vistoria } from '@prisma/client';
 import { VistoriaAssetDto, VistoriaResponseDto } from './dto/vistoria-response.dto';
 import { AppService } from 'src/app.service';
+import { contains, equals } from 'class-validator';
+import { equal } from 'assert';
 
 @Injectable()
 export class VistoriasService {
@@ -66,14 +68,15 @@ export class VistoriasService {
   async findAll(
     pagina: number = 1,
     limite: number = 10,
-    busca?: string
+    busca?: string,
+    status?: boolean
   ) {
     [pagina, limite] = this.app.verificaPagina(pagina, limite);
     const searchParams = {
       ...(busca ?
         {
           OR: [
-            { descricao: { contains: busca } }
+            { processoId: { contains: busca } },
           ]
         } :
         {}),
@@ -82,7 +85,10 @@ export class VistoriasService {
     if (total == 0) return { total: 0, pagina: 0, limite: 0, users: [] };
     [pagina, limite] = this.app.verificaLimite(pagina, limite, total);
     const subprefeituras = await this.prisma.vistoria.findMany({
-      where: searchParams,
+      where: {
+        ...searchParams,
+        deletado: status
+      },
       skip: (pagina - 1) * limite,
       take: limite
     });
