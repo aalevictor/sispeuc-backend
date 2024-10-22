@@ -5,12 +5,14 @@ import { SalvaguardaService } from 'src/salvaguarda/salvaguarda.service';
 import { PaginationQueryDto } from 'src/common/dtos/pagination.dto';
 import { Vistoria } from '@prisma/client';
 import { VistoriaAssetDto, VistoriaResponseDto } from './dto/vistoria-response.dto';
+import { AppService } from 'src/app.service';
 
 @Injectable()
 export class VistoriasService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly salvaguardaService: SalvaguardaService,
+    private app: AppService
   ) {}
 
   async create(
@@ -61,24 +63,35 @@ export class VistoriasService {
     }
   }
 
-  async findAll(paginationQuery: PaginationQueryDto): Promise<Vistoria[]> {
-    const {
-      limit = 10,
-      offset = 0,
-      order = 'asc',
-      orderBy = 'atualizadoEm',
-    } = paginationQuery;
-
-    const orderByFields = orderBy ? { [orderBy]: order } : undefined;
-
-    const where: any = { deletado: false };
-    return this.prisma.vistoria.findMany({
-      where,
-      take: +limit,
-      skip: +offset,
-      orderBy: orderByFields,
-      include: { VistoriaAsset: true },
+  async findAll(
+    pagina: number = 1,
+    limite: number = 10,
+    busca?: string
+  ) {
+    [pagina, limite] = this.app.verificaPagina(pagina, limite);
+    const searchParams = {
+      ...(busca ?
+        {
+          OR: [
+            { descricao: { contains: busca } }
+          ]
+        } :
+        {}),
+    };
+    const total = await this.prisma.vistoria.count({ where: searchParams });
+    if (total == 0) return { total: 0, pagina: 0, limite: 0, users: [] };
+    [pagina, limite] = this.app.verificaLimite(pagina, limite, total);
+    const subprefeituras = await this.prisma.vistoria.findMany({
+      where: searchParams,
+      skip: (pagina - 1) * limite,
+      take: limite
     });
+    return {
+      total: +total,
+      pagina: +pagina,
+      limite: +limite,
+      data: subprefeituras
+    };
   }
 
   async findOne(id: number): Promise<Vistoria | null> {

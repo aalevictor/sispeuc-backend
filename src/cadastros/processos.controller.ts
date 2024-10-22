@@ -17,7 +17,6 @@ import { Usuario } from '@prisma/client';
 import { AuditInterceptor } from 'src/common/interceptors/audit.interceptor';
 import { ProcessosService } from './processos.service';
 import { CreateProcessoDto } from './dto/create-processo.dto';
-import { PaginationQueryDto } from 'src/common/dtos/pagination.dto';
 import { UpdateProcessoDto } from './dto/update-processo.dto';
 
 @ApiTags('cadastros')
@@ -38,8 +37,8 @@ export class ProcessosController {
 
   @Get('buscar-processos')
   findAll(
-    @Query('pagina') pagina?: string,
-    @Query('limite') limite?: string,
+    @Query('pagina') pagina: string = '1',
+    @Query('limite') limite: string = '10',
     @Query('busca') busca?: string,
   ) {
     return this.processosService.findAll(+pagina, +limite, busca);

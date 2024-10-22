@@ -61,8 +61,12 @@ export class VistoriasController {
   }
 
   @Get('buscar-vistorias')
-  findAll(@Query() paginationQuery: PaginationQueryDto) {
-    return this.vistoriasService.findAll(paginationQuery);
+  findAll(
+    @Query('pagina') pagina: string = '1',
+    @Query('limite') limite: string = '10',
+    @Query('busca') busca?: string,
+  ) {
+    return this.vistoriasService.findAll(+pagina, +limite, busca);
   }
   @Get('buscar-vistoria/:id')
   findOne(@Param('id') id: string) {
