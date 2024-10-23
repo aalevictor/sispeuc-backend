@@ -53,6 +53,11 @@ export class ProspeccoesController {
     return this.prospeccoesService.findAll(paginationQuery);
   }
 
+  @Get('buscar-todos-imoveis')
+  findAllNoPagination() {
+    return this.prospeccoesService.findAllNoPagination();
+  }
+
   @Get('buscar-imovel/:id')
   findOne(@Param('id') id: string) {
     return this.prospeccoesService.findOne(+id);

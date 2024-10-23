@@ -85,6 +85,12 @@ export class ProspeccoesService {
     });
   }
 
+  async findAllNoPagination(): Promise<Imovel[]> {
+    return this.prisma.imovel.findMany({
+      where: { deletado: false }
+    });
+  }
+
   async findOne(id: number): Promise<Imovel | null> {
     return this.prisma.imovel.findUnique({
       where: {
