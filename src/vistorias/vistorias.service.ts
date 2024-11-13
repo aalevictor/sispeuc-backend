@@ -274,7 +274,7 @@ export class VistoriasService {
     files: Array<Express.Multer.File>
   ): Promise<VistoriaResponseDto> {
     const usuarioId: string = vistoria.usuarioId;
-    const uploads: Promise<VistoriaAssetDto>[] = files.map(async (file) => {
+    const uploads: Promise<VistoriaAssetDto>[] = files.map(async (file: Express.Multer.File) => {
       const fileUrl: string = await this.salvaguardaService
         .uploadFile(file, usuarioId)
       return {
