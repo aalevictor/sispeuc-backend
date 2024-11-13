@@ -24,7 +24,6 @@ import {
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { Permissoes } from 'src/auth/decorators/permissoes.decorator';
 import { UsuarioAtual } from 'src/auth/decorators/usuario-atual.decorator';
-import { PaginationQueryDto } from 'src/common/dtos/pagination.dto';
 import { VistoriasService } from './vistorias.service';
 
 @ApiTags('vistorias')
@@ -67,8 +66,6 @@ export class VistoriasController {
     @Query('busca') busca?: string,
     @Query('status') status?: string,
   ) {
-    console.log(status);
-    
     return this.vistoriasService.findAll(+pagina, +limite, busca, status == 'true' ? true : false);
   }
   @Get('buscar-vistoria/:id')
