@@ -227,9 +227,9 @@ export class VistoriasService {
 
       await this.salvaguardaService.deleteFile(fileName);
 
-      console.log(
-        `Asset with ID ${assetId} and file ${fileName} deleted successfully.`,
-      );
+      // console.log(
+      //   `Asset with ID ${assetId} and file ${fileName} deleted successfully.`,
+      // );
     } catch (error) {
       console.error('Error during asset deletion:', error);
       throw new Error('Failed to delete asset or file. Please try again.');

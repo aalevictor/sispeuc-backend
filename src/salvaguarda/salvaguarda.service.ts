@@ -104,7 +104,7 @@ export class SalvaguardaService {
         process.env.MINIO_BUCKET_NAME,
         objectKey,
       );
-      console.log(`File deleted successfully: ${objectKey}`);
+      // console.log(`File deleted successfully: ${objectKey}`);
     } catch (error) {
       console.error('Error deleting file from Minio:', error);
     }

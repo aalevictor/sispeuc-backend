@@ -54,7 +54,7 @@ export class SalvaguardaController {
         this.salvaguardaService.uploadFile(file, storageObjectsDto.entityId),
       ),
     );
-    console.log({ storageObjectsDto, fileNames });
+    // console.log({ storageObjectsDto, fileNames });
     return fileNames;
   }
 

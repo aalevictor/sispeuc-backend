@@ -10,7 +10,6 @@ export class CadastrosService {
 
   async create(usuarioId: string, createCadastroDto: CreateCadastroDto) {
     const { processo, imovel } = createCadastroDto;
-    console.log(imovel);
     
     try {
       // Criar o registro do processo
@@ -33,7 +32,6 @@ export class CadastrosService {
       });
       return createdProcesso;
     } catch (error) {
-      console.log(error);
       
       if (
         error instanceof PrismaClientKnownRequestError &&
